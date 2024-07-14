@@ -9,3 +9,9 @@ High-Level Design and Low-Level Design are the two main aspects of System Design
 
 Solid principle:-
 https://www.freecodecamp.org/news/solid-design-principles-in-software-development/#whataresoliddesignprinciples
+
+Factory Design Pattern:-
+
+A Factory Pattern or Factory Method Pattern says that just define an interface or abstract class for creating an object but
+let the subclasses decide which class to instantiate. In other words, subclasses are responsible to create the instance of the class.
+https://www.javatpoint.com/factory-method-design-pattern
