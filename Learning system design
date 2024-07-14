@@ -6,3 +6,6 @@ and maintainable systems.
 System design involves creating both a High-Level Design (HLD), which is like a roadmap showing the overall plan, and a Low-Level Design (LLD),
 which is a detailed guide for programmers on how to build each part. It ensures a well-organized and smoothly functioning project. 
 High-Level Design and Low-Level Design are the two main aspects of System Design.
+
+Solid principle:-
+https://www.freecodecamp.org/news/solid-design-principles-in-software-development/#whataresoliddesignprinciples
