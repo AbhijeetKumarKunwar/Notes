@@ -21,3 +21,7 @@ https://www.geeksforgeeks.org/abstract-factory-pattern/
 
 Builder Design pattern(creational design pattern):-
 https://github.com/Design-pattrns/Builder-Pattern
+Object Pool design pattern:-(creational design pattern):-
+https://notebook.zohopublic.in/public/notes/dcr5za494c035adb441818e2bc20485b4de58
+The aove example show if we don't have sigleton pattern in that case someone will create two manager object and one more set of three
+connectin object will be created and we will loose the target achievement.
