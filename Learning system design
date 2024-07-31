@@ -28,3 +28,11 @@ connectin object will be created and we will loose the target achievement.
 methods are thread safe if multiple threads are trying to make connection our list will not get corrupted in that case.
 Creational design pattern:-
 https://gitlab.com/shrayansh8/interviewcodingpractise/-/blob/main/src/LowLevelDesign/All_Creational_Pattern-1_Screenshot.png
+
+Strategy Design Pattern:-
+The problem statement for this case is -when child class override the parent method but sometime child classes need some feature
+which are not there in the parent class in that case all childs class will write that method which will be kind of duplicate 
+in all child class. we will create one class which will have that feature and it will be implemented for all kind of use case and 
+the parent class will have referance of this class which will initialise by constructor. when we wil call the metod of that class
+whcih we created that class method will be called, that is dynamic thing.we can understand this by the below ex-
+https://www.freecodecamp.org/news/a-beginners-guide-to-the-strategy-design-pattern/
