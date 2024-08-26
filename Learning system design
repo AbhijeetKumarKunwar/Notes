@@ -54,6 +54,9 @@ object of car like wise, in the case we are sending Cycle but we don't have Cycl
 to overcome this issue we will Return object of NullClass() which will have method like same as all class but having default values.like getNumber of
 weels and getNumber of seat, in that case null will return 0 default values, so, if we are doing any operation after factory method call we don't need to
 check for null .
+https://www.geeksforgeeks.org/null-object-design-pattern/
+
+Cammand design patter(Behavioral desgin pattern):-
 
 
 
