@@ -36,3 +36,13 @@ in all child class. we will create one class which will have that feature and it
 the parent class will have referance of this class which will initialise by constructor. when we wil call the metod of that class
 whcih we created that class method will be called, that is dynamic thing.we can understand this by the below ex-
 https://www.freecodecamp.org/news/a-beginners-guide-to-the-strategy-design-pattern/
+
+Null object pattern:-(behaviour design pattern)
+Problem-when we are writing any method where input is any object and we have to compute over the object, there problem occur, like
+void printName(Student s)
+{
+Sop(s.getName())// here s can be null .we have to have null check before any operation over the obj but we have
+to write this at every place in such case across project.
+
+}
+
