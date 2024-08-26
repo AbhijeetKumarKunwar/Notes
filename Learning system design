@@ -45,4 +45,15 @@ Sop(s.getName())// here s can be null .we have to have null check before any ope
 to write this at every place in such case across project.
 
 }
+=>we have to avoid the null check every place . Here it come null objec desgin pattern-
+A Null object replaces NULL return type
+NO need to put if Check for checking null
+Null refect do nothing(when operation will be made on obj) or default value.
+=>e,g- supponse we have implemented factory design patter where subclass is creating object against our api call like if we are sending car we are getting 
+object of car like wise, in the case we are sending Cycle but we don't have Cycle object mapped in factory class so ,in that case we send null.
+to overcome this issue we will Return object of NullClass() which will have method like same as all class but having default values.like getNumber of
+weels and getNumber of seat, in that case null will return 0 default values, so, if we are doing any operation after factory method call we don't need to
+check for null .
+
+
 
