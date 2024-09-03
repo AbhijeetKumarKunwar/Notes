@@ -60,5 +60,11 @@ Cammand design patter(Behavioral desgin pattern):-
 https://notebook.zohopublic.in/public/notes/u3i1s7022b343ebda42819272312415abb520
 https://www.geeksforgeeks.org/command-pattern/
 
+Iterator desgin pattern:-
+The Iterator design pattern provides a sequential access interface to the elements of an aggregate object without exposing 
+its underlying representation. It encapsulates the traversal logic and provides a uniform way to iterate over different types
+of collections without knowing their specific implementations.
+https://notebook.zohopublic.in/public/notes/bietvc07e6ecf28d7409286145c16e623f9ed
+
 
 
