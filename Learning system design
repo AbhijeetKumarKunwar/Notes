@@ -66,5 +66,8 @@ its underlying representation. It encapsulates the traversal logic and provides 
 of collections without knowing their specific implementations.
 https://notebook.zohopublic.in/public/notes/bietvc07e6ecf28d7409286145c16e623f9ed
 
-
+Template method design pattern:-
+Template Method is a behavioral design pattern that defines the skeleton of an algorithm in the superclass but lets subclasses
+override specific steps of the algorithm without changing its structure.
+https://notebook.zohopublic.in/public/notes/bietvc07e6ecf28d7409286145c16e623f9ed
 
