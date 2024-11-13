@@ -1,0 +1,329 @@
+
+https://trainocate.qwiklabs.com/discovery
+skill boost
+->project->vm->bucket creation. access it through cloud shee and  ssh cmd 
+https://in-globalknowledge-jp.qwiklabs.com/ilt/classrooms/5545/students/43108
+while creating instance inside the project we can 
+we can take out the code genrated for same or terraform code too.
+which can be used to create the instance with same config from cmd
+
+cloud shell-
+when we logineed in we can access any project from here
+e.g we can see the buckets by below command from cloud shell
+->gsutil ls
+switch prject-> gcloud config set project <projectName>
+we will have promt change to new project
+->gsutil ls ->will give all list of buckets and items
+shell can not use more tan 60hrs weeks
+it keeps cloing the session its gone but data is saved .
+->we can crate the vm using cloud shell using the code genrated wile from ui create instane.
+->third way to intract with gcp is sdk,
+we can install the sdk using powershell and we can lgoin to our gcp and 
+4=>(we get the rest api curl ,teraform and app access there in same place where we create vm on UI eqivalent code)
+gcloud init --
+
+
+explore billings
+billing account-unique which will be linked to all projects
+create budget
+breakdowm
+
+
+Marketplace-
+vpc(Virtual Private Cloud) is byDefault expose to 40 regions
+
+https://console.cloud.google.com/net-security/firewall-manager/firewall-policies/list?project=qwiklabs-gcp-00-b9c50e04308d
+mynetwork-allow-icmp
+
+10.164.0.2
+34.32.212.108
+
+
+
+104.197.251.36
+
+https://storage.googleapis.com/qwiklabs-gcp-03-3b3c768c4b4a/my-excellent-blog.png
+
+labs
+pre test
+ppt
+
+custom vpc, firewall rule,
+ping bwt differt vpc of differet regions ==>create peering connection.
+
+34.82.66.201
+34.81.188.9
+34.168.220.100
+
+gcloud storage cp [ README-cloudshell.txt] gs://[abhijeet_bct]
+gcloud storage cp ‘FILE.txt' gs://[abhijeet_bct]
+
+34.145.205.16
+
+LB_IP=[35.186.206.202:80]
+while [ -z "$RESULT" ] ; 
+do 
+  echo "Waiting for Load Balancer";
+  sleep 5;
+  RESULT=$(curl -m1 -s $LB_IP | grep Apache);
+done
+
+qwiklabs-gcp-03-6f060f36997c:europe-west4:wordpress-db
+export SQL_CONNECTION=qwiklabs-gcp-03-6f060f36997c:europe-west4:wordpress-db
+
+CED57266-01-01-01-0000
+Cost Center: 0110257266
+57266
+examtopics
+https://cp.certmetrics.com/google/en/login
+https://www.examtopics.com/exams/google/associate-cloud-engineer/view/
+
+https://in-globalknowledge-jp.qwiklabs.com/classrooms/5545
+
+https://in-globalknowledge-jp.qwiklabs.com/classrooms/5546s
+raesons for refund and cancel membership
+membership testing is not done yet due to test data
+compute we are facing issue with few orders-
+cancel need to connnect for istio endpoint
+
+Static ip address:-
+we can create from vpc and we will get option to assign to vm, when we do so, the empherial ip will be gone.if we stop our vm
+still ip will be assign to it. It can be swithced to other vm too
+->We can set up the startup script under the management while crating the vm at bottom option;so, we are pass script of installing s/w while 
+vm launches.
+
+->Instanc template:-
+why do we need to specify all vm instance details every time ,we can define matchine type,image,labels and starup scirp and other properties
+it can not be edited can be duplicated and modify.
+->compute engine->instance template->create vm instance, that will auto populate all preconfigured info from instance template.
+->vm name will be samename of template suffix 1
+->Installing  os patches and sw during startup script will increate the boot time so, we creating a custom image with OS patches and
+software pre-installed.using Custom Image to Startup script
+->Image can be created from existing vm instance, persistence disk() or snapshort , another image or clound storage.
+->we can create the image from disk associated with our vm instance, we can open the disck and from option we will option to create image
+but we can not create the image from running instnace, so we need to stop the vm so,we can create the image from the disk assoicated with that vm.
+->we can create the vm instance from this image but best way to in our case we can make copy of our instance template and update debian image to our 
+custom image and from that instance template we can create as many vm we want. we can update the starup scipt as required.
+=>Sustained use discount- get discount if we run our vm for significant amaoauant of time.
+these are autometically applied by google with few restriction.
+=>committed use discount-it use for predictable resource like 1 year or 3 year
+we need to purchese the the commintemt for hadarware or sw with time and req confi, it will be applied to our vm when we use them.
+=>preemtible vm->short lived cheaper (upto 80 percent) compute instance
+.can be stopped by gcp anytime within 24 hrs and we use for coset saving and our app should  be farut tolrleant for this, uses for batch processsing jobs
+It can be created using vm creation process but under management we can select the opton for it.
+
+=>Spot vms- latest version of preemptible vms , it does not hgave mx time for 24 hrs .
+=>Under budget and alterts on console we can crate .we can export billing too.
+=>Live migration and availablity policy-running instanc is migrated to another host in thet same zone
+not supported for gpus and preemtible instances.
+Availability Policy:
+On host maintenance: What should happen during periodic infrastructure maintenance?
+Migrate (default): Migrate VM instance to other hardware
+Terminate: Stop the VM instance
+Automatic restart - Restart VM instances if they are terminated due to non-user-initiated
+reasons (maintenance event, hardware failure etc.)
+=>GPU can be added to our vm when we create vm, we can select gpu specific matchine type or we can go with some matchine type like N1 which give 
+option to add gpu.
+
+VM to remember:-
+Associated with a project
+Machine type availability can vary from region to regions
+You can only change the machine type (adjust the number of vCPUs
+and memory) of a stopped instance
+You CANNOT change the machine type of a running instance
+VM's can be filtered by various properties
+Name, Zone, Machine Type, Internal/External IP, Network, Labels etc
+Instances are Zonal (Run in a specific zone (in a specific region))
+Images are global (You can provide access to other projects - if needed)
+Instance templates are global (Unless you use zonal resources in your templates)
+Automatic Basic Monitoring is enabled
+Default Metrics: CPU utilization, Network Bytes (in/out), Disk Throughput/IOPS
+For Memory Utilization & Disk Space Utilization - Cloud Monitoring agent is needed
+
+Google Cloud Platform (GCP) offers a service called “sole-tenant nodes” that allows users to run their virtual machine (VM) instances on dedicated 
+physical hardware. Sole Tenant nodes allow you to group your VMs together on the same hardware or separate your VMs.othe wise our vm used shared
+hardware.
+
+=>Gcloud-command line interface to intract with gc resouceshttps://cloud.google.com/sdk/gcloud/reference/compute/instances/create
+
+=>Instance group:-group of instance 
+FIrst we shold have instance template
+Under compute engine go to instance group and crate new isntance group AND WE CAN  go for managed or unmanaged
+we can give insatance template and rest deatils here.
+we can set health check with htttp and time 
+Health createria whcih define no of fail or success to make it fhealth faklure.
+Update Manage instance grp:-
+rolling update:-
+go to mig and click on update vms->we can change our instance template here to new instance template
+we can add instance templae and give the number to which will be tested first (canary testing) then it will be roll out to other isntance.
+
+load balancer:-
+Load balancer work on the input of health checks, if it fail it will route the trafic to healthy instance.
+creating load balancer on gcp:-
+we have alraedy created managed instance group->having multiple instance running and our load balancer will route the trafic to them.
+Network service->load balancing->create load balancer.
+->start configuration->select internet or internal
+
+->backend-readirect the trfic in our case it Managed IG
+->host and path rule->set rule how we sent req to backend
+->front end configuration->where we would recive the trafic.
+We will get the trafic to Front end and according to host and path rule it will be route to the backend.
+Bakend config->create backed service/bucket->name,service type will be IG and we can select our IG and http , port 80
+balancing mode, max balanced-> utilization means we want to utilize the isntance to max Percentage the go to other vms and 
+Rate ->we can define the rate of number of request per second.
+=>we can configure multiple backend.
+->we can set CDN
+=>configure heath checks
+UDP is signle region.
+=>host and path rule-how trafic will be re directed to backend
+Here we can choose single host and path rule or advance where we can configure endpoint and its host.
+for our case we will go for single and configure IG Backend
+
+=>front end-where do u want to recieve request.
+http and port 80, review and create .
+
+first we created instance template which is having details of our vm insance with custom image->we have created IG with the our instance template
+and confgired n number of vm instance->load balancer is created using IG as backend service so, we will get the request on lb
+and it will be routed to the all vm instance under IG.
+
+
+App engine -
+create from screch
+create project->new project->name-learning-app engine
+APP Engine->enable the api (app engine admin api)->enable
+->we can have one app engine in a project.
+->create->select region->this is regional one, if we want to create in multiple reagion then we have to create multiple projects.
+->select language and environment.
+After creating aap engine we can deploye ,open cloud sheel and editor.
+_>open folder and drop down our services here and checkk it by doing ls.
+->Each service will have files like app.yml-it will have configs
+main.py-app code and requirement.txt willl have dependency .
+->set the project on cloud shell and run command to deploy-
+gcloud app deploy
+give the required permission from IAM,to the id shown in error if w
+we will get the url of qpp deployed.
+gcloud app versiond/dervice list 
+when we deploye the new change to api we can check the versions liek
+->gcloud app versions list
+it will give the all versions and trafic of version serve.
+->we can get the url of app:-
+gcloud app browse
+gcloud app browse --version version_name-it will give the spefic version url.
+->we can promote rhe new version but let the old version deploye using --no promote command.
+->we can make it live by gcloud app browse --version v2
+->we can split the trafic on app engine deployed :-
+gcloud app services set -trafic --splits=v3=.5,v2=.5
+we can split by differnt option like-
+--split-by=random ,at end of above command.
+we can do this from web broser , from appp engine we can go to versions and by selection version check box we can migrate trafic
+by ip,cookies or random.
+
+app.yml fileL-
+runtime: python39
+service: my-first-service
+
+main.py
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return 'My First Service - V1'
+	
+requirements.txt
+Flask==3.0.0
+
+we can list our all services and gcloud browse to the any of the version then that endpoint we can get.
+this is having service name so, we it will not deployed as default service .we can ls to this file and fire deploye command
+
+
+
+KuberNates:-
+
+Here are some of the commands we will run in the next few steps (Refer back to this if you have any problems!)
+
+gcloud config set project my-kubernetes-project-304910
+gcloud container clusters get-credentials my-cluster --zone us-central1-c --project my-kubernetes-project-304910
+kubectl create deployment hello-world-rest-api --image=in28min/hello-world-rest-api:0.0.1.RELEASE
+kubectl get deployment
+kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+kubectl get services
+kubectl get services --watch
+curl 35.184.204.214:8080/hello-world
+kubectl scale deployment hello-world-rest-api --replicas=3
+gcloud container clusters resize my-cluster --node-pool default-pool --num-nodes=2 --zone=us-central1-c
+kubectl autoscale deployment hello-world-rest-api --max=4 --cpu-percent=70
+kubectl get hpa
+kubectl create configmap hello-world-config --from-literal=RDS_DB_NAME=todos
+kubectl get configmap
+kubectl describe configmap hello-world-config
+kubectl create secret generic hello-world-secrets-1 --from-literal=RDS_PASSWORD=dummytodos
+kubectl get secret
+kubectl describe secret hello-world-secrets-1
+kubectl apply -f deployment.yaml
+gcloud container node-pools list --zone=us-central1-c --cluster=my-cluster
+kubectl get pods -o wide
+ 
+kubectl set image deployment hello-world-rest-api hello-world-rest-api=in28min/hello-world-rest-api:0.0.2.RELEASE
+kubectl get services
+kubectl get replicasets
+kubectl get pods
+kubectl delete pod hello-world-rest-api-58dc9d7fcc-8pv7r
+ 
+kubectl scale deployment hello-world-rest-api --replicas=1
+kubectl get replicasets
+gcloud projects list
+ 
+kubectl delete service hello-world-rest-api
+kubectl delete deployment hello-world-rest-api
+gcloud container clusters delete my-cluster --zone us-central1-c
+
+=>Create kubernate cluster:-
+cloud console->new project->search-Kuberates engine and enbaled it.
+->create cluster->standerd or gcloud container clusters create 
+rename and put the things default.
+->By default it is having 3 nodes and 6 vcups and 112 gb memonry
+->A node can be a physical or virtual machine that provides computing power to run workloads
+->A Kubernetes cluster is made up of multiple nodes, and every cluster needs at least one worker node to run pods. 
+_>If a node fails, it's automatically removed from the cluster and other nodes take ove
+->Kubernetes runs your workload by placing containers into Pods to run on Nodes. A node may be a virtual or physical machine, depending on the cluster. Each node is managed by the control plane and contains the services necessary to run Pods.
+->to connect with cluster connect optionfrom three dot option and we will get the command we will use from shell.
+e.g-glcoud container cluster get-credentials my-cluster --zone us-central1-c --project my -project.
+
+Here's the command to create a deployment which we will run in the next step!
+=>kubectl create deployment hello-world-rest-api --image=in28min/hello-world-rest-api:0.0.1.RELEASE
+->chek the deployement-kuctl get deployement
+->to expose our dployement to internet we need to create load balancer type service which will give external ip:-
+kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+kubectl get services
+kubectl get services --watch //to see the status of exrernal ip for above load balancer, ctrl+c to exit watch
+curl 35.184.204.214:8080/hello-world //externa id /port/endpoint
+->kubernate create load balancer for us.
+->we can add node pool to our kubernates cluster, bydefault we have 1 node pool having multiple nodes in it.we can add node to nodepool according to
+our need like image, gpu,like compute engine we did.
+
+->we can see our deployment i workloads.
+->IN our case we have made one deployement so, one instance is running so we have one Pod.
+each running instance as part of deployemnt is called pods.
+->Expose serviec(load balancer) and cpus we can see in deployemnt details.
+->we can scale our instance/pod-
+kubectl scale deployment hello-world-rest-api --replicas=3
+we will have 3 pods running .
+kubectl get services //we can see 3 instances are ready.
+if we hit the endpoint-we will able to make endpoint call to all three by load balancer which is managed by kubernates.
+->if we want to resize our cluster that means node pool, we can do it by cloud shell command:-(Manual resize)
+=>gcloud container clusters resize my-cluster(clusterName) --node-pool default-pool(pool name) --num-nodes=2 --zone=us-central1-c
+=>we can scale this autometically:-scale micoservices
+kubectl autoscale deployment hello-world-rest-api --max=4 --cpu-percent=70 (it will horzentally scale the pods when cpu utilization update 70 percante)
+kubectl get hpa //status of horzental pods
+=>auto scale cluster:-
+=>we can store config in configmap and secrect in secret of kubernates.
+=>we can change these deployement configurationfrom yml file present in the our dpleoyemnt.
+kubectl create configmap hello-world-config --from-literal=RDS_DB_NAME=todos
+kubectl get configmap
+kubectl describe configmap hello-world-config
+kubectl create secret generic hello-world-secrets-1 --from-literal=RDS_PASSWORD=dummytodos
+kubectl get secret
+kubectl describe secret hello-world-secrets-1
+=>kubectl apply -f deployment.yaml //deploye yml file to kubernates.
