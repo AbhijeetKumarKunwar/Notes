@@ -3,3 +3,7 @@ HashMap<Integer,Long> hsi=(HashMap<Integer,Long>)arr.stream().
 collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
 ->Function.identity() will give the values of arr and counting() will add its occurence.
 =>.collect(Collectors.counting()) collects the elements of the stream and counts them, resulting in a Long value.
+=>Mapping the string name with their lenght:-
+String strName1[]= {"abhjo","ravi","sabhi","abhijeet","abhjo","ravi"};
+		Map<String,Integer> map=Arrays.stream(strName).collect(Collectors.toMap(x->x,x->x.length()));
+		System.out.print(map);
