@@ -7,3 +7,5 @@ collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
 String strName1[]= {"abhjo","ravi","sabhi","abhijeet","abhjo","ravi"};
 		Map<String,Integer> map=Arrays.stream(strName).collect(Collectors.toMap(x->x,x->x.length()));
 		System.out.print(map);
+=>Ascii for az-97 to 122, A to Z-65 to 90. 0 to 9-> 48 to 57.
+=?Ascii to char->char ch=(char)(96+i);
