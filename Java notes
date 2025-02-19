@@ -9,3 +9,5 @@ String strName1[]= {"abhjo","ravi","sabhi","abhijeet","abhjo","ravi"};
 		System.out.print(map);
 =>Ascii for az-97 to 122, A to Z-65 to 90. 0 to 9-> 48 to 57.
 =?Ascii to char->char ch=(char)(96+i);
+Exceptional handling inheritance:-
+https://www.geeksforgeeks.org/exception-handling-with-method-overriding-in-java/
