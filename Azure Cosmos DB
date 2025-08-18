@@ -41,3 +41,27 @@ This API is designed for graph data models, allowing you to store and query data
 
 Table API:
 This API provides compatibility with Azure Table Storage, offering a key-value store for high-throughput, low-latency applications. It's suitable for migrating existing Azure Table Storage applications.
+=>we have to create acount for each api, one account will not work for other account api.
+
+Why No Sql DB?
+->High volume of data
+->Dynamic schema {data from socia media}
+->Horizental scaling
+->don't force schema
+
+DATA MODELS in NO SQL:-
+There are four primary types of NoSQL data models:
+
+Document Databases:
+These store data in flexible, semi-structured documents, often in formats like JSON or BSON. Each document can have a different structure, making them well-suited for handling diverse and evolving data. Examples include MongoDB and Apache CouchDB.,cosmos db.
+
+Key-Value Stores:
+This is the simplest NoSQL model, where data is stored as a collection of key-value pairs. Each key is unique and maps to a specific value, which can be any type of data. Examples include Redis and Amazon DynamoDB.azure table.
+
+Wide-Column Stores (Column-Family Databases):
+These organize data into tables, but unlike relational databases, columns can be added dynamically, and rows can have different sets of columns. This model is optimized for handling large datasets with high read and write throughput. Examples include Apache Cassandra and HBase.
+
+Graph Databases:
+These are designed to store and query highly connected data, representing entities as "nodes" and their relationships as "edges." This model is ideal for applications involving complex relationships, such as social networks or recommendation engines. Examples include Neo4j and OrientDB.,apache gemlin
+
+NoSQL data models are chosen for their flexibility, scalability (especially horizontal scalability), and performance in handling large volumes of diverse data, making them suitable for modern applications like big data analytics, real-time applications, and content management systems.
