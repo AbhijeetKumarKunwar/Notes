@@ -1,1 +1,43 @@
+Azure Cosmos DB is a fully managed, globally distributed, multi-model database service offered by Microsoft Azure. It is designed to provide high availability, scalability, and low-latency access to data for modern applications.
+Key features of Azure Cosmos DB include:
 
+Global Distribution:
+It allows data distribution across multiple Azure regions, ensuring low-latency access for users worldwide and high availability.
+
+Multi-Model Support:
+Azure Cosmos DB natively supports various data models, including document (NoSQL), key-value, graph (Gremlin), and column-family (Cassandra), providing flexibility for different application needs.
+
+Automatic and Instant Scalability:
+It automatically scales throughput and storage based on application demands, eliminating the need for manual capacity planning.
+
+Guaranteed Performance:
+It offers guaranteed single-digit millisecond latency and high availability with financially backed SLAs.
+
+Multiple Consistency Models:
+It provides a range of consistency models (eventual, consistent prefix, session, bounded-staleness, and strong) to balance consistency and performance based on application requirements.
+
+Serverless and Provisioned Throughput Options:
+It offers both serverless and provisioned throughput capacity modes, allowing optimization for cost and performance based on workload patterns.
+
+API IN COSMOS DB:-
+
+Azure Cosmos DB offers multiple APIs to interact with your data, providing flexibility based on your application's needs and existing skillsets. These APIs allow you to leverage Azure Cosmos DB's global distribution, elastic scalability, and guaranteed low latency while using familiar data models and query languages.
+The primary APIs available are:
+
+NoSQL (Core) API:
+This is the native API for Azure Cosmos DB, designed for document-oriented data. It supports SQL-like queries for JSON documents and is ideal for new applications or those requiring high performance and flexibility.
+
+MongoDB API:
+This API provides wire protocol compatibility with MongoDB, allowing you to use existing MongoDB drivers, SDKs, and tools with Azure Cosmos DB. It's suitable for migrating existing MongoDB applications with minimal code changes.
+
+PostgreSQL API:
+This API offers PostgreSQL compatibility, enabling you to use Azure Cosmos DB as a PostgreSQL database. It supports relational data models, SQL queries, and features like JSON support and geospatial capabilities.
+
+Cassandra API:
+This API provides compatibility with Apache Cassandra, allowing you to use Cassandra drivers and tools with Azure Cosmos DB. It's suitable for migrating existing Cassandra-based applications.
+
+Gremlin API:
+This API is designed for graph data models, allowing you to store and query data as vertices and edges using the Gremlin traversal language. It's ideal for applications requiring graph-based analysis, such as social networks or recommendation engines.
+
+Table API:
+This API provides compatibility with Azure Table Storage, offering a key-value store for high-throughput, low-latency applications. It's suitable for migrating existing Azure Table Storage applications.
