@@ -65,3 +65,19 @@ Graph Databases:
 These are designed to store and query highly connected data, representing entities as "nodes" and their relationships as "edges." This model is ideal for applications involving complex relationships, such as social networks or recommendation engines. Examples include Neo4j and OrientDB.,apache gemlin
 
 NoSQL data models are chosen for their flexibility, scalability (especially horizontal scalability), and performance in handling large volumes of diverse data, making them suitable for modern applications like big data analytics, real-time applications, and content management systems.
+
+Why to use nosql db with document  data model ?
+->json is commonly used data format
+-> cosmos db supports json cosmos natively
+->no need to predefine schema
+->Diff type of data can be stored together.
+
+Advantages it provides:-
+Guaranteed speeed
+fully managed serverless.(users do not need to provision or manage the underlying infrastructure or manually configure throughput capacity)
+
+=>When to go for Nosql cosmos db:-
+Unpredictable spike and high dip in traffic.
+Applicaiton generate lots of data
+Business continuty
+
