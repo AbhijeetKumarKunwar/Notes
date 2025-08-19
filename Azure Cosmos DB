@@ -81,3 +81,10 @@ Unpredictable spike and high dip in traffic.
 Applicaiton generate lots of data
 Business continuty
 
+----Component of cosmos db for no sql:--
+1.Account:- A Database Account is the top-level resource, providing a unique endpoint for accessing Cosmos DB resources A Database     Account is the top-level resource, providing a unique endpoint for accessing Cosmos DB resources.
+2.Database:- Databases act as namespaces, managing users and permissions.
+3.COntainer:-Containers, similar to tables, store items, which can be documents, rows, or other atomic data structures, depending on the chosen AP
+4.items:-data
+
+
