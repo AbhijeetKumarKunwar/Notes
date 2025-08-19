@@ -87,3 +87,18 @@ Business continuty
 4.items:-data
 
 
+======================================Creating azure cosmos db for nosql======
+https://portal.azure.com/#home
+#########Basic####
+->database->azure cosmos db->subscription tye
+->Resouce group (logical group where all db will be there)
+->Account Name->unique account name
+->location where our appliaciton is deployed
+->capacity mode->provisioned thoughput(rented resouces dedicatedly) /serverless(pay as you go autometically)
+->Provisioned throughput->in case of traffic is highly predictable
+->checked for limited provisioned thorught put is there to controll the pricing.
+
+###########Global distribution########
+=>Geo Redendency->DAta would replicated in other resons as Read-only mode to increase the availablity e.g as we selected the East us in region under basic, if we enabled this then it will be paired to us West too in read only mode.
+=>Multi Region write:->if we enabled this data would be availble in paired region with write access,( can be written to all region)
+=>Availablity zone:->Data would be replicated to all zone of selected region.
