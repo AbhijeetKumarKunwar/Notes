@@ -18,7 +18,6 @@ It provides a range of consistency models (eventual, consistent prefix, session,
 
 Serverless and Provisioned Throughput Options:
 It offers both serverless and provisioned throughput capacity modes, allowing optimization for cost and performance based on workload patterns.
-
 API IN COSMOS DB:-
 
 Azure Cosmos DB offers multiple APIs to interact with your data, providing flexibility based on your application's needs and existing skillsets. These APIs allow you to leverage Azure Cosmos DB's global distribution, elastic scalability, and guaranteed low latency while using familiar data models and query languages.
