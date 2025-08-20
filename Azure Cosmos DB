@@ -129,5 +129,16 @@ creating container is same as creating tables
 when we will go to new , we will have option of new container/new Database
 ->new Data base->ask for databaseId(name)->if we check at provision thoughPut->we have to give the thorugput option ->
 autoscale(we need to give the RU/s , first it will use 10 percent of limit and increase in the case of trafic) /Manual-> RU/s->OK to create db.
-----------------------------------creating container Table------------
+->when we create db without checking Provisioned Throughput in that case we don't need to give RU/s to it , it will use the autoscaling i.e serverless which will allocate the RU accourding to the consumption and will be charged accordingly.
+->if we are creating other db with Provisioned Throughtput of x*1000 , it should not excced the limit we provisioned on account level, if we have given 1000 at account level we can max give 1000 during db creation, if we going beyond that we
+need to increase it form billing section.
+
+----------------------------------creating container (Table)------------
+click on three dot of database, it will give option to create new container->we can select the data id which we have created
+->containerId will be table name->partition key is like primery key in RDBMS it will be used to improve search 
+->provisioned dedicated throughput for this table will give the dedicated RUs to this container otherwise, if we not select
+this , what ever RU has been given to the Database level will be utilize by all container of the database
+->OK will create the table inside the container.
+
+
 
