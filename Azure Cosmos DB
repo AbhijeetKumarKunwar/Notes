@@ -87,7 +87,7 @@ Business continuty
 4.items:-data
 
 
-======================================Creating azure cosmos db for nosql======
+======================================Creating azure cosmos db account for nosql======
 https://portal.azure.com/#home
 #########Basic####
 ->database->azure cosmos db->subscription tye
@@ -118,3 +118,16 @@ encyption type->service managed key OR custom managed key {encryption of data}
 ####################Tag##############
 Key value label e.d Env :learning
 -------------------account will be create the reviewing the details--------------
+post creation we will get the url to access the DB.
+RU=>
+Request Units (RUs) are a performance currency of system resources (such as CPU, IOPS, and memory)
+=>we have diff option to explore like activity log to see all log of activity,iam, etc
+
+
+-----------------------------------Creating database---------
+creating container is same as creating tables
+when we will go to new , we will have option of new container/new Database
+->new Data base->ask for databaseId(name)->if we check at provision thoughPut->we have to give the thorugput option ->
+autoscale(we need to give the RU/s , first it will use 10 percent of limit and increase in the case of trafic) /Manual-> RU/s->OK to create db.
+----------------------------------creating container Table------------
+
