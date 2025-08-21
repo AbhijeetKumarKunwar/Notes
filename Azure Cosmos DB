@@ -1,4 +1,5 @@
-Azure Cosmos DB is a fully managed, globally distributed, multi-model database service offered by Microsoft Azure. It is designed to provide high availability, scalability, and low-latency access to data for modern applications.
+Azure Cosmos DB is a fully managed, globally distributed, multi-model database service offered by Microsoft Azure.
+It is designed to provide high availability, scalability, and low-latency access to data for modern applications.
 Key features of Azure Cosmos DB include:
 
 Global Distribution:
@@ -81,7 +82,8 @@ Applicaiton generate lots of data
 Business continuty
 
 ----Component of cosmos db for no sql:--
-1.Account:- A Database Account is the top-level resource, providing a unique endpoint for accessing Cosmos DB resources A Database     Account is the top-level resource, providing a unique endpoint for accessing Cosmos DB resources.
+1.Account:- A Database Account is the top-level resource, providing a unique endpoint for accessing Cosmos DB resources A Database     
+Account is the top-level resource, providing a unique endpoint for accessing Cosmos DB resources.
 2.Database:- Databases act as namespaces, managing users and permissions.
 3.COntainer:-Containers, similar to tables, store items, which can be documents, rows, or other atomic data structures, depending on the chosen AP
 4.items:-data
@@ -155,4 +157,25 @@ Each api has its own set of db operation it points form simple read query to com
 DB system resounces based on complexity of operation
 RU Request Unit->system resouces are expressed in term of RU , which is combination of cpu, memory and IOPS, or Input/Output Operations Per Second.
 1 RU->cost to read point 1 kb item ,regardless of which api of cosmos u are using, its common for all as unit.
-we configure this while creatin account and also at time of creating db.
+we configure this while creatin account and also at time of creating db.Par
+
+--------------------------------ThroughPut-----------
+=>number if req can Db handle per second is thorughput , its unit is Ru/s
+=>we can define the TP at database layer(it will share over all the container of the db),container layer(it will use the allocated RU/s at each container layer)
+or both(IN the case of mixed i,e data base is define with set of RU/s will be shared over the all the container which are not define with RU/s at container layer , amout
+would be depend on the workload , it will be totalAllocatedAt container -dedicated allocated to the container,it means remaining RU will only shared ), 
+e.g more TP means we need to define more Ru to our container.
+
+---------------------Cost management---------
+We can calculate the price using pricing calculator, it depend upon the worload RU/s used ,reagions etc.
+-------------------------------Horizental scale-------------------
+Each container has limit of saving data once, its reach next new container is created to store the data with same machine config, so it will scale its self .
+
+--------------------------------Partition and partition key--------------
+It is used the divide the data in such a way that its improve the query performace to retrive the set of data frequently.it is being done on creteria which is partition key.
+->The items in a container are divided into distinct subsets called logical partitions. 
+Logical partitions are formed based on the value of a partition key that is associated with each item in a container
+->suppose we have city is partition key then we will have logical parition if each city and if we are getting data related to deli , it will go to that partion only , if we 
+value is getting added, it will create new partition.
+explain:-https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning-overview
+------------------------------------------------
