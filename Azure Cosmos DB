@@ -221,3 +221,20 @@ physical partitions and their network addresses. This allows the request to be r
 Local index lookup: Once the request arrives at the correct physical partition, it performs a search on that partition's independent, local index.
 Cosmos DB automatically indexes all properties by default, so it can perform an efficient index lookup to find all items for "user123".
 The scale of this index is much smaller than a full table index, which makes the lookup very fast. 
+
+
+------------------------------------------------Single partition vs Cross partition (Fan out)---
+Single-partition query
+A single-partition query is a request that includes the exact value of a partition key in its filter. 
+How it works: The database's query engine knows which specific logical and physical partition to search, so it only needs to look in one location.
+e.g:-Example query: SELECT * FROM c WHERE c.userId = 'user123' (assuming userId is the partition key). 
+
+Cross-partition query
+A cross-partition query is a request that does not specify a partition key value or searches for data across multiple partition key values. This forces the database 
+to search all partitions. 
+How it works: The database engine must "fan out" the query, executing it against the index of every physical partition.
+It then gathers and aggregates the results from all partitions before returning the final result.
+Example query: SELECT * FROM c WHERE c.status = 'pending' (assuming status is not the partition key). 
+
+-----------------------------Hot partition------------------
+
