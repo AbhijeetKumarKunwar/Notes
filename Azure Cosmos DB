@@ -274,20 +274,20 @@ the global distribution features available in the provisioned throughput model.
 ->Pricing calculator:-https://azure.microsoft.com/en-in/pricing/calculator/
 ->In Azure Cosmos DB, you can choose from three different pricing and scaling models to manage throughput, which is measured in Request Units per second (RU/s).
 
-1. Standard (Manual) provisioned throughput
+1. Standard (Manual) provisioned throughput(multiple region,20gb per logical partition and unlimited container)
 This is a fixed-rate model where you manually set the number of RU/s you need for your database. 
 How it works: You specify a fixed number of RU/s (starting at 400 RU/s) that is reserved for your database or container. This capacity is always available.
 Billing: You are billed hourly for the capacity you provision, regardless of whether you use it all. If you scale up for a traffic spike,
 you are billed for that higher capacity for the entire hour. best use in caes of predictable Trafice.
 
-2.Autoscale provisioned throughput
+2.Autoscale provisioned throughput(multiple region, unlimited container and 20 gb per logical partition)
 This model automatically scales your throughput up and down based on your application's usage. 
 How it works: You set a maximum throughput limit (e.g., 4,000 RU/s), and Cosmos DB automatically scales the throughput between 10% of that maximum and the maximum itself.
 For example, a 4,000 RU/s max will scale between 400 and 4,000 RU/s.
 Billing: You are billed hourly for the highest RU/s the system scaled to within that hour. 
 This is often more cost-effective than manual provisioning for variable workloads.
 
-3. Serverless
+3. Serverless limit ( container limit of 1 TB. Each logical partition is capped at 20 GB)
 This is a pay-as-you-go, consumption-based model that eliminates the need to manage throughput entirely. 
 How it works: You don't provision any throughput. Cosmos DB automatically handles the scaling. Your database operations consume RUs, 
 and the service scales instantly and automatically to handle the load.
