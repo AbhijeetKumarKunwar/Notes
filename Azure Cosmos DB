@@ -171,11 +171,53 @@ We can calculate the price using pricing calculator, it depend upon the worload 
 -------------------------------Horizental scale-------------------
 Each container has limit of saving data once, its reach next new container is created to store the data with same machine config, so it will scale its self .
 
+-------------------------------how search work---------
+->query recive by sdk ->will check the partition key with hash method->corresponding logical partition will be found against it ->routing table has logical and physical
+mapping so, it will go to the physical partition where actual data is stored->there it will do the local index search and fianlly it will go the logical partition 
+and get the data against the key.
+
 --------------------------------Partition and partition key--------------
+->we can not create container without PK, it can possible with legacy sdk.
 It is used the divide the data in such a way that its improve the query performace to retrive the set of data frequently.it is being done on creteria which is partition key.
 ->The items in a container are divided into distinct subsets called logical partitions. 
 Logical partitions are formed based on the value of a partition key that is associated with each item in a container
 ->suppose we have city is partition key then we will have logical parition if each city and if we are getting data related to deli , it will go to that partion only , if we 
 value is getting added, it will create new partition.
+. All the items in a logical partition have the same partition key value.
+->When you select a partition key, Cosmos DB uses a hash of that key's value to determine the logical partition for each item. 
+These logical partitions are then placed onto the physical partitions. 
+->Each logical partition is linked with physical partion through hasing and its managed by azure, programmer can only manage the logical partition.
 explain:-https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning-overview
 ------------------------------------------------
+Why a partition key is required
+->The partition key is essential for Cosmos DB to function as a distributed, scalable database.
+->Enables horizontal scaling: It allows Cosmos DB to distribute your data and throughput across multiple physical partitions. Without a partition key, 
+the database would not be able to scale beyond the limits of a single server.
+->Optimizes queries: When you provide the partition key in a query, Cosmos DB can route the request directly to the specific physical partition containing the data,
+avoiding a performance-intensive cross-partition query.
+Ensures consistency and transactions: All transactions within a stored procedure or trigger are scoped to a single logical partition. The partition key defines this scope,
+allowing for multi-item ACID transactions. 
+
+-
+Logical partitioning and data distribution:-
+=>Item ingestion and hashing: When you create or update an item in Cosmos DB, the system uses a hash algorithm on the item's partition key value.
+=>Logical partition assignment: The hash of the partition key determines which logical partition the item belongs to. All items with the same partition key value
+reside in the same logical partition.
+=Logical-to-physical mapping: Cosmos DB automatically maps these logical partitions to physical partitions. Many logical partitions can be mapped 
+to a single physical partition, but a single logical partition will never span multiple physical partitions.
+=>Scaling and load balancing: As a container's storage or throughput increases, Cosmos DB automatically and transparently moves logical partitions 
+to new physical partitions to balance the load. This horizontal scaling ensures the system can handle large and growing workloads. 
+
+
+
+----------------------------------How it make search faster-------------
+->It's a common misconception that Cosmos DB does a full scan of the partition key hash space. Instead, it uses hashing and routing tables 
+to directly go to the correct physical partition, which is what makes it faster and more scalable than a full table scan in a relational database. 
+->Request from SDK: When you issue a query with a partition key filter (e.g., SELECT * FROM c WHERE c.userId = "user123"), the Cosmos DB SDK on your client first parses it.
+->No "full scan": The system does not do a full scan of all possible partition key hashes. Instead, it takes the value "user123", runs it through a hash function, 
+and immediately determines the exact logical partition where that data is stored.
+->Direct routing: The Cosmos DB gateway or SDK's routing table (depending on the connectivity mode) already knows the mapping of logical partition ranges to 
+physical partitions and their network addresses. This allows the request to be routed directly to the specific physical partition containing the logical partition for "user123", bypassing all other partitions.
+Local index lookup: Once the request arrives at the correct physical partition, it performs a search on that partition's independent, local index.
+Cosmos DB automatically indexes all properties by default, so it can perform an efficient index lookup to find all items for "user123".
+The scale of this index is much smaller than a full table index, which makes the lookup very fast. 
