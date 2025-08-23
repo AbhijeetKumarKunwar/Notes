@@ -223,7 +223,7 @@ Cosmos DB automatically indexes all properties by default, so it can perform an 
 The scale of this index is much smaller than a full table index, which makes the lookup very fast. 
 
 
-------------------------------------------------Single partition vs Cross partition (Fan out)---
+------------------------------------------------Single partition vs Cross partition (Fan out)------------------------------
 Single-partition query
 A single-partition query is a request that includes the exact value of a partition key in its filter. 
 How it works: The database's query engine knows which specific logical and physical partition to search, so it only needs to look in one location.
@@ -236,5 +236,59 @@ How it works: The database engine must "fan out" the query, executing it against
 It then gathers and aggregates the results from all partitions before returning the final result.
 Example query: SELECT * FROM c WHERE c.status = 'pending' (assuming status is not the partition key). 
 
------------------------------Hot partition------------------
+                                          -----------------------------Hot partition------------------
+A hot partition is a partition in a distributed database that receives a disproportionately high amount of read or write traffic compared to other partitions. 
+This leads to performance issues, like throttling, because it overloads a single node while other nodes are underutilized.
+It is usually caused by a poor choice of partition key.e,g if someone choose currentTime as partition key, most of the req will go to same logical partition and will 
+do the throtteling.
+-------------------------------------------------------------------TTL (time to live)-------------
+Time to Live (TTL) in Azure Cosmos DB is a mechanism that automatically deletes items from a container after a specified period. 
+This feature is useful for managing data retention and storage costs by removing data that is no longer needed, such as session data, logs, or other temporary items. 
+How TTL works
+The TTL value is a duration measured in seconds and begins its countdown when an item is created or last modified. An item with an expired TTL 
+value is marked for deletion and purged by Cosmos DB in the background without consuming any user-provisioned Request Units (RUs). 
+->This can be configured at container lvel which will be default for al item and item level also. This is under setting ->radio button.
+------------------------------------------serverless pricing mode--------
+serverless pricing mode in cosmos db
+In Azure Cosmos DB, the serverless pricing mode is a consumption-based model where you are only billed for the resources your database operations actually consume.
+This differs from the provisioned throughput models, where you reserve a certain amount of capacity (Request Units per second, or RU/s) and pay for it hourly,
+whether you use it or not. 
+The serverless model is ideal for workloads with unpredictable or intermittent traffic, 
+or for development and testing, where provisioning dedicated throughput is not cost-effective. 
+=----------How serverless pricing works=------------
+Pay-per-request
+Automatic scaling: 
+No minimum charges:
+Storage costs:
+Who should use serverless pricing?-------------
+Infrequent or spiky workloads
+Development and testing:
+Getting started
+--------------------------------Billing under Manual(TP ) vs autosacle--
+we can choose this from scale section of db, if we opt for Manual throughput we have to pay as per provisioning weather using or not but in case of autoscale it will use the
+the 10 percent of max allocated RUs and it will increase based on traffice, so,costing will be save.
 
+--------------------------------------------------Pricing----------------
+->No, you cannot have multiple regions in a serverless Azure Cosmos DB account. Serverless accounts are limited to a single Azure region and do not support 
+the global distribution features available in the provisioned throughput model. 
+->Pricing calculator:-https://azure.microsoft.com/en-in/pricing/calculator/
+->In Azure Cosmos DB, you can choose from three different pricing and scaling models to manage throughput, which is measured in Request Units per second (RU/s).
+
+1. Standard (Manual) provisioned throughput
+This is a fixed-rate model where you manually set the number of RU/s you need for your database. 
+How it works: You specify a fixed number of RU/s (starting at 400 RU/s) that is reserved for your database or container. This capacity is always available.
+Billing: You are billed hourly for the capacity you provision, regardless of whether you use it all. If you scale up for a traffic spike,
+you are billed for that higher capacity for the entire hour. best use in caes of predictable Trafice.
+
+2.Autoscale provisioned throughput
+This model automatically scales your throughput up and down based on your application's usage. 
+How it works: You set a maximum throughput limit (e.g., 4,000 RU/s), and Cosmos DB automatically scales the throughput between 10% of that maximum and the maximum itself.
+For example, a 4,000 RU/s max will scale between 400 and 4,000 RU/s.
+Billing: You are billed hourly for the highest RU/s the system scaled to within that hour. 
+This is often more cost-effective than manual provisioning for variable workloads.
+
+3. Serverless
+This is a pay-as-you-go, consumption-based model that eliminates the need to manage throughput entirely. 
+How it works: You don't provision any throughput. Cosmos DB automatically handles the scaling. Your database operations consume RUs, 
+and the service scales instantly and automatically to handle the load.
+Billing: You are billed based on the total number of RUs your database operations consume during the billing period. There is no minimum charge.
