@@ -292,3 +292,73 @@ This is a pay-as-you-go, consumption-based model that eliminates the need to man
 How it works: You don't provision any throughput. Cosmos DB automatically handles the scaling. Your database operations consume RUs, 
 and the service scales instantly and automatically to handle the load.
 Billing: You are billed based on the total number of RUs your database operations consume during the billing period. There is no minimum charge.
+
+
+-------------------------
+---------------------SPring boot application to work with cosmos nosql db---------
+create application from spring.io by adding dependecency of azure support,cosmos-db and get the db config from key of acocount
+
+spring.cloud.azure.cosmos.endpoint=${COSMOSDB_URI}
+spring.cloud.azure.cosmos.key=${COSMOSDB_KEY}
+spring.cloud.azure.cosmos.database=${COSMOSDB_DATABASE_NAME}
+This config will make the connection with DB
+
+pojo:-
+
+@Container(containerName = "products") //THis will map to table same like jpa
+public class Product {
+    @Id
+    private String id;
+    @PartitionKey
+    private String category; //this is mandatory to make transactions with table
+
+    private String name;
+    private double price;
+    private int quantity;
+}
+
+Repo:-
+@Repository
+public interface ProductRepository extends CosmosRepository<Product, String> {
+
+}
+we can find the data based on feild type same as JPA, we can also do it by including the parition key which will
+make search more efficient , that way sdk will get the idea which logical partition need to be search other wise it will
+search the whole db.
+->save method will save the the data into it and if id is same it will udpate the data.
+->if we db i snot there , it will create the db with name which we have pased in the applicaiton.properties file
+->we can  pass the prorperties to the pojo class it will create the container in that db e.g:-
+---------------------------------------------creation of containe from java code------------------
+@Container(
+    containerName = "products",
+    ru = "400",
+    partitionKeyPath = "/category"
+)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Product {
+    
+    @Id
+    private String id;
+    
+    @PartitionKey
+    private String category;
+    
+    private String name;
+    private double price;
+}
+Use code with caution.
+
+Customizing the @Container annotation
+containerName: The name of the container to be created or used.
+ru: The manual throughput in Request Units per second (RU/s). If not specified, the default is 400.
+partitionKeyPath: A crucial setting that defines the partition key for the container. This should match the field annotated with @PartitionKey in your POJO. 
+Step 3: Disable auto-creation (optional)
+If you do not want your application to automatically create or update the container, you can disable this feature by setting autoCreateContainer to false in the @Container annotation. 
+java
+@Container(
+    containerName = "products",
+    autoCreateContainer = false
+)
+Use code with caution.
