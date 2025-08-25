@@ -365,3 +365,36 @@ java
 )
 
 --------------------------------------------------Batch mulitple point operation together------------
+we can perform the batch operation using spring boot data saveAll method and  Native Cosmos DB Java SDK executeBulkOperations()
+
+->saveAll() is a convenient Spring Data abstraction for bulk database operations. When saving to Cosmos DB,
+it often batches operations internally, especially for documents sharing the same partition key, to improve performance. 
+It is the go-to method for straightforward bulk inserts where a full batch processing framework is overkill.
+->executeBulkOperations() is a lower-level, high-performance method from the native Cosmos DB SDK, 
+used for massive-scale, high-throughput ingestion.
+->executeBulkOperations() is the most performant way to ingest data into Cosmos DB, ideal for high-volume batch processing. 
+It allows you to create a stream of operations (Flux<CosmosItemOperation>) that the SDK executes in parallel.
+This method offers the highest throughput by efficiently managing concurrency and handling transient errors,
+but it requires more manual setup compared to the declarative saveAll().
+
+->Save will be implemented similer to JPA .
+
+--------service layer code to perform buil opration using Native sdk of cosmos db--------
+
+private final CosmosAsyncContainer container;//this willl use to execute the bulkMethod
+
+    // The CosmosAsyncClient is automatically configured by Spring
+    public ProductServiceSdk(CosmosAsyncClient cosmosAsyncClient) {
+        this.container = cosmosAsyncClient.getDatabase("mydatabase").getContainer("products");
+    }
+
+    public void bulkInsertItems(String category, List<Product> products) {
+        Flux<CosmosItemOperation> bulkOperations = Flux.fromIterable(products)
+                .map(product -> CosmosItemOperations.getCreateItemOperation(product, new PartitionKey(product.getFileId));
+
+        return container.executeBulkOperations(bulkOperations);
+    }
+
+->Flux<CosmosItemOperation> bulkOperations: This declares a Flux named bulkOperations. In Reactive programming,
+a Flux is a stream that can emit multiple items over time. In this case, the stream will emit CosmosItemOperation objects, 
+which represent individual database operations to be performed.
