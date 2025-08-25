@@ -353,12 +353,15 @@ Use code with caution.
 Customizing the @Container annotation
 containerName: The name of the container to be created or used.
 ru: The manual throughput in Request Units per second (RU/s). If not specified, the default is 400.
-partitionKeyPath: A crucial setting that defines the partition key for the container. This should match the field annotated with @PartitionKey in your POJO. 
+partitionKeyPath: A crucial setting that defines the partition key for the container. This should match the field annotated 
+with @PartitionKey in your POJO. 
 Step 3: Disable auto-creation (optional)
-If you do not want your application to automatically create or update the container, you can disable this feature by setting autoCreateContainer to false in the @Container annotation. 
+If you do not want your application to automatically create or update the container,
+you can disable this feature by setting autoCreateContainer to false in the @Container annotation. 
 java
 @Container(
     containerName = "products",
     autoCreateContainer = false
 )
-Use code with caution.
+
+--------------------------------------------------Batch mulitple point operation together------------
