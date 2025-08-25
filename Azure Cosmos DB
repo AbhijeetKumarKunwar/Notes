@@ -398,3 +398,20 @@ private final CosmosAsyncContainer container;//this willl use to execute the bul
 ->Flux<CosmosItemOperation> bulkOperations: This declares a Flux named bulkOperations. In Reactive programming,
 a Flux is a stream that can emit multiple items over time. In this case, the stream will emit CosmosItemOperation objects, 
 which represent individual database operations to be performed.
+
+
+--------------------------------------------Query---------------
+SELECT * FROM c
+
+*c is an alias for the container. You can use any name you like, but c is a common convention. 
+SELECT c.id, c.price FROM c WHERE c.category = "electronics"
+
+=>select c.id, {price123=c.price} as PriceAmount from c where orderId='1234' //this will response the jason where priceAmount"{"price123":"23"}
+as object.
+=>IS_DEFINED(c.fieldName)->it wil return true or false based on filedName present in container.
+IS_ARRAY(),IS_NULL,IS_NUMBER()
+=>e.g select (c.price *3) as TriplePrice from c where x='y'->response will have price filed name same as alis.
+=---------------------bUILT IN METHOD-------------
+CONCAT(C.X,C.y),LOWER(), ETC
+DISTINCT VALUE -for unique .
+=>data base interaction using query from java sprint boot code:-https://medium.com/@shivam.misra03/azure-cosmos-sdk-with-java-spring-boot-b5752319b29d
