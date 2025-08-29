@@ -421,5 +421,77 @@ Cosmos DB's indexing system uses an inverted index, representing your JSON data 
 
 =>Default behavior: When you create a new container, Cosmos DB's default indexing policy automatically indexes every property of every item. This makes developing and running most queries fast out of the box without manual index management.
 =>we can see the default indexing in setting of container.
-->if we remove the indexing for one of the filed and try to search against that filed, we can see more RU's will be consumed
-this is the reasons we should index our filed which are used for query.
+->if we remove the indexing for one of the filed and try to search against that filed, we can see more RU's will be consumed since, it will scan whole container,this is the reasons we should index our filed which are used for query.
+->Default behavior: When you create a new container, Cosmos DB's default indexing policy automatically indexes every property of every item. This makes developing and running most queries fast out of the box without manual index management.
+
+1-Opt-out (recommended): Keep the root path /* in includedPaths and explicitly add paths you don't need to query to excludedPaths. This is best if your document schema evolves over time.
+json
+{
+  "indexingMode": "consistent",
+  "automatic": true,
+  "includedPaths": [
+    { "path": "/*" }
+  ],
+  "excludedPaths": [
+    { "path": "/description/*" },
+    { "path": "/unnecessaryProperty/*" }
+  ]
+}
+
+2-Opt-in: Exclude the root path /* and explicitly include only the paths you need to query. This is good for fixed data models or write-heavy workloads.
+
+3.If you have queries with an ORDER BY clause on multiple properties (e.g., ORDER BY c.name, c.age), you must add a composite index.
+The compositeIndexes array contains multiple index definitions.
+json
+{
+  "indexingMode": "consistent",
+  "compositeIndexes": [
+    [
+      { "path": "/lastName", "order": "ascending" },
+      { "path": "/firstName", "order": "ascending" }
+    ]
+  ]
+}
+
+---------------------------------indexing work on read and write-----------
+How indexing works during writes
+Document to tree: When an item is written (inserted or updated), Cosmos DB first represents the JSON document as a tree structure.
+Path extraction: Every property in the document is assigned a path. For example, a property city nested inside an address would have the path /address/city.
+Blind incremental indexing: For each property path and its value that needs to be indexed (based on the container's indexing policy), Cosmos DB creates a new entry in its inverted index. To maximize write throughput, it uses a lock-free, write-optimized data structure called a Bw-Tree.
+No lookup on writes: Updates to the index are written as "delta records" and are appended to the index structure. The system doesn't perform a read-before-write lookup on the index, which eliminates contention and increases write speed.
+Cost tradeoff: Indexing has a cost. The more properties you index, the higher the Request Unit (RU) charge for write operations, as the index itself must be updated. 
+How indexing works during reads
+Query parsing: The query engine parses the incoming SQL query to identify filter predicates, ordering requirements, and other clauses.
+Index utilization: The engine then consults the inverted index for the relevant properties. For example, for a query WHERE c.city = "Paris", the engine looks up the path /city with the value Paris in its index.
+
+-----------------------------------internal work if search query without partition key but with indexing-----
+How a read query works internally
+Request routing: The query engine receives the query (e.g., SELECT * FROM c WHERE c.location = 'Seattle'). Because it does not contain a partition key filter, the gateway cannot route the request to a single physical partition. Instead, it sends the query to all physical partitions in the container.
+Parallel index search: Each physical partition has its own independent, inverted index. The query engine runs the query against the local index of every partition in parallel.
+Local results retrieval: Within each partition, the query uses the index to find the documents that match the filter condition (location = 'Seattle'). The index points directly to the document IDs, allowing for a fast lookup.
+Fan-out and gather: Each physical partition returns the set of results that match the query.
+----------------------indexing work when we land to the physical partion using partition key---------
+
+==============Indexing using spring boot==========
+@Container(containerName = "product-container")
+@CosmosIndexingPolicy(
+    includePaths = {"/*"},
+    excludePaths = {"/description/*"} // Exclude the "description" path
+)
+public class Product {
+
+===========================================composite indexing in springboot============
+Example: Optimizing a sorted query
+=>Suppose you have a Product entity and often run queries that filter by category and sort the results by price. 
+=>Query: SELECT * FROM c WHERE c.category = 'Electronics' ORDER BY c.price DESC 
+=>To optimize this, you need a composite index on (category, price). Here is how you would implement that on the Product POJO: 
+@Container(containerName = "product-container")
+@CosmosIndexingPolicy(
+    compositeIndexes = {
+        @CompositeIndex(paths = {
+            @CompositeIndexPath(path = "/category", order = CompositeIndexPath.CompositePathSortOrder.ASCENDING),
+            @CompositeIndexPath(path = "/price", order = CompositeIndexPath.CompositePathSortOrder.DESCENDING)
+        })
+    }
+)
+public class Product {
