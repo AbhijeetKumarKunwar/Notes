@@ -415,3 +415,8 @@ IS_ARRAY(),IS_NULL,IS_NUMBER()
 CONCAT(C.X,C.y),LOWER(), ETC
 DISTINCT VALUE -for unique .
 =>data base interaction using query from java sprint boot code:-https://medium.com/@shivam.misra03/azure-cosmos-sdk-with-java-spring-boot-b5752319b29d
+--------------------------------------------------Indexing in cosmos--------------
+indexing is the process of automatically indexing every property of every item in a container by default. This is managed through an indexing policy, which you can customize to control how your data is indexed to optimize for specific query patterns and reduce storage or write costs. 
+Cosmos DB's indexing system uses an inverted index, representing your JSON data as a tree structure. This allows for efficient retrieval of data without having to perform full document scans. 
+
+=>Default behavior: When you create a new container, Cosmos DB's default indexing policy automatically indexes every property of every item. This makes developing and running most queries fast out of the box without manual index management.
