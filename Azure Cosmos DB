@@ -420,3 +420,6 @@ indexing is the process of automatically indexing every property of every item i
 Cosmos DB's indexing system uses an inverted index, representing your JSON data as a tree structure. This allows for efficient retrieval of data without having to perform full document scans. 
 
 =>Default behavior: When you create a new container, Cosmos DB's default indexing policy automatically indexes every property of every item. This makes developing and running most queries fast out of the box without manual index management.
+=>we can see the default indexing in setting of container.
+->if we remove the indexing for one of the filed and try to search against that filed, we can see more RU's will be consumed
+this is the reasons we should index our filed which are used for query.
