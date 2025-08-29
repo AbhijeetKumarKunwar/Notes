@@ -495,3 +495,6 @@ Example: Optimizing a sorted query
     }
 )
 public class Product {
+
+=>cosmos connection with java code:-https://medium.com/@shivam.misra03/azure-cosmos-sdk-with-java-spring-boot-b5752319b29d
+using sdk
