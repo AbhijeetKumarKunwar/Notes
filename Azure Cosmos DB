@@ -209,7 +209,11 @@ to a single physical partition, but a single logical partition will never span m
 to new physical partitions to balance the load. This horizontal scaling ensures the system can handle large and growing workloads. 
 
 
-
+---------------------------------How it work when one physical partition reached its storage-------------
+Each logical partition can belong to only only physical parition , if phlysical partition reached its limit , cosmos sdk will create new physical partition and migrate(not split) the logical partition to new physical partition
+ and its correponding mapping of physical and logic will be updated in routing table .so, we can not have logical
+partition belong to two physical partition.
+-----------------------------------
 ----------------------------------How it make search faster-------------
 ->It's a common misconception that Cosmos DB does a full scan of the partition key hash space. Instead, it uses hashing and routing tables 
 to directly go to the correct physical partition, which is what makes it faster and more scalable than a full table scan in a relational database. 
@@ -498,3 +502,37 @@ public class Product {
 
 =>cosmos connection with java code:-https://medium.com/@shivam.misra03/azure-cosmos-sdk-with-java-spring-boot-b5752319b29d
 using sdk
+-----------------------------How cosmos work with partition key and indexing------------
+=> The most critical step is for the SDK to check if the query includes a filter on the container's partition key.
+In-partition query: If an equality filter is present on the partition key (e.g., WHERE c.partitionKey = 'value'), the SDK knows exactly which logical partition the data resides in. Since a logical partition is always on a single physical partition, the SDK can route the query directly to that specific physical partition.
+
+=>Cross-partition query: If the query does not specify a partition key filter, or if it uses an IN clause with multiple partition key values, the SDK must query multiple or all physical partitions. This is known as a fan-out query. 
+
+=>Once the query is routed to the correct physical partition(s), the query engine on the backend servers takes over. Each physical partition maintains its own inverted index, which is used to satisfy the query as efficiently as possible without having to scan all documents.
+=>the query engine performs an index seek. It uses the inverted index to go directly from the property value to the list of document IDs that contain it. This is extremely fast because it only needs to read the index pages for the matching values and load only the resulting items
+=>e,g
+{
+  "id": "doc2",
+  "partitionKey": "Europe",
+  "name": "EuroCorp",
+  "location": {
+    "city": "London",
+    "country": "United Kingdom"
+  },
+  "employees": 300
+}
+=>Simplified inverted index
+The inverted index, stored within each physical partition, maps property paths and their values to the IDs of the documents that contain them. For the documents above, a simplified inverted index for the Europe partition would look like this: 
+
+Path/Value       	      Document IDs (Posting List)
+name/Acme Inc.	          [doc1]
+name/EuroCorp	            [doc2]
+location.city/London	    [doc2]
+location.city/Paris	      [doc1]
+location.country/France	   [doc1]
+
+Query examples using the inverted index
+1. Index seek (equality filter)
+Query: SELECT * FROM c WHERE c.location.country = "France"
+Engine action: The query engine looks for the specific path-value pair location.country/France in the inverted index.
+Result: It immediately finds that only doc1 is in the posting list for this entry. The engine fetches doc1 and returns it. No other documents or index pages are read, making this the most efficient type of query. 
