@@ -536,3 +536,25 @@ Query examples using the inverted index
 Query: SELECT * FROM c WHERE c.location.country = "France"
 Engine action: The query engine looks for the specific path-value pair location.country/France in the inverted index.
 Result: It immediately finds that only doc1 is in the posting list for this entry. The engine fetches doc1 and returns it. No other documents or index pages are read, making this the most efficient type of query. 
+
+    ----------------change feed for tracking database -----------
+
+For tracking modifications to the data itself, the Change Feed Processor is the most robust and scalable option. It is typically run as part of a Spring Boot application, processing changes as they occur. 
+Set up Change Feed containers: In your Cosmos DB account, create two containers:
+Monitored container: Your main container where documents are created, updated, and deleted.
+Lease container: A separate container to manage state across multiple application instances.
+
+we can handle this using java code.
+            ------------------------Azure Function with a Cosmos DB trigger-----------
+=>The recommended and simplest method for monitoring changes in an Azure Cosmos DB database is by using an Azure Function with a Cosmos DB trigger. This serverless, event-based approach removes the need to manage infrastructure and automatically handles scaling and state management for the Change Feed. 
+=>How the Cosmos DB trigger works
+The Azure Functions trigger for Cosmos DB is specifically designed to work with the Change Feed. 
+Monitored Container: You designate a container to be monitored. All inserts, updates, and deletes to this container are recorded in the Change Feed.
+Lease Container: The trigger automatically creates a "lease" container to manage state. The lease container acts as a bookmark, tracking which changes have been processed.
+Automatic Scaling: As the volume of changes increases, the Azure Functions runtime automatically scales out your function instances. The lease container ensures that different function instances can process change events in parallel without conflicts.
+No Infrastructure Management: As a serverless service, you only need to provide the business logic to process the change feed. Azure Functions handles all the underlying infrastructure required for a reliable and scalable event-driven architecture. 
+
+
+--------------------------Azure Cognitive Search -------------
+Azure Cognitive Search (now known as Azure AI Search) is not a feature of Cosmos DB, but a separate Azure service that integrates with Cosmos DB to provide advanced, AI-powered search functionality. This is used for scenarios where Cosmos DB's native indexing and query capabilities are not sufficient for a rich, search-engine-like experience. 
+A common architectural pattern is to use Cosmos DB for transactional data and low-latency point reads, while offloading complex search queries to Azure AI Search to preserve database resources. 
