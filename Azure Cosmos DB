@@ -591,4 +591,17 @@ Timestamps: A multi-region write account uses two timestamp values for each item
 _ts: The local server epoch time when the item was written in that region.
 crts: The conflict resolution timestamp, assigned after a write is confirmed in the "hub" region and any conflicts are resolved.
 Consistency: Strong consistency is not possible with multi-region writes. For high availability, you must select one of the weaker consistency levels (Bounded Staleness, Session, Consistent Prefix, or Eventual). 
+                                 -------------Servive managed failover----(autometic failover)
+=>under the replicate data globally, we have service managed failover section where we can set the priority 
+which will be followed in the case of failover.In the case of write region failure the priority read region will
+be marked as write region.
+=>A service-managed feature that automatically promotes a secondary region to the primary write region during a detected 
+regional outage. It ensures business continuity without user action and follows a predefined failover priority list. 
+This is recommended for production workloads to maintain high availability. 
+                                         Manul failover
+-This is also ther in the same section of replicate data globally, where we simulated the failover situtation
+and we move the write region to one of the read region so, see the mock of actual failover condition.
+->A user-initiated process to deliberately switch the primary write region for a multi-region Cosmos DB account. 
+It is used for planned activities like disaster recovery drills or migrating the primary write region based on traffic
+patterns. This process requires manual intervention via the Azure portal or CLI. 
 
