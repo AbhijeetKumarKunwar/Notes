@@ -604,4 +604,5 @@ and we move the write region to one of the read region so, see the mock of actua
 ->A user-initiated process to deliberately switch the primary write region for a multi-region Cosmos DB account. 
 It is used for planned activities like disaster recovery drills or migrating the primary write region based on traffic
 patterns. This process requires manual intervention via the Azure portal or CLI. 
+                          -------------------How to handle Read and write in case of multi region --------
 
