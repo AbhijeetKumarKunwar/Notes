@@ -456,7 +456,7 @@ json
     ]
   ]
 }
-
+//when we will pass the query under order by of these field in same order.it will give us data.
 ---------------------------------indexing work on read and write-----------
 How indexing works during writes
 Document to tree: When an item is written (inserted or updated), Cosmos DB first represents the JSON document as a tree structure.
@@ -607,3 +607,6 @@ patterns. This process requires manual intervention via the Azure portal or CLI.
 
 -------------------------------Consistency in cosmos---------------------
 https://medium.com/@banuriwickramarathna/consistency-levels-in-azure-cosmosdb-255865693724
+->To optimise indexing we have include the field based on the required query , if we will keet it default in cosmos db, it will 
+cosume the more Rus.
+->
