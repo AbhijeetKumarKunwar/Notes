@@ -609,4 +609,8 @@ patterns. This process requires manual intervention via the Azure portal or CLI.
 https://medium.com/@banuriwickramarathna/consistency-levels-in-azure-cosmosdb-255865693724
 ->To optimise indexing we have include the field based on the required query , if we will keet it default in cosmos db, it will 
 cosume the more Rus.
-->
+->                                   stored procedure 
+In Azure Cosmos DB for NoSQL, a stored procedure is a pre-compiled piece of business logic written in JavaScript that is
+executed directly inside the database engine. This allows you to perform one or more database operations, such as creating, 
+reading, updating, and deleting documents, within a single, atomic transaction. 
+->https://bakshiharsh55.medium.com/crud-stored-procedures-in-azure-cosmos-db-90a42876e20b
