@@ -614,3 +614,5 @@ In Azure Cosmos DB for NoSQL, a stored procedure is a pre-compiled piece of busi
 executed directly inside the database engine. This allows you to perform one or more database operations, such as creating, 
 reading, updating, and deleting documents, within a single, atomic transaction. 
 ->https://bakshiharsh55.medium.com/crud-stored-procedures-in-azure-cosmos-db-90a42876e20b
+
+---------------------------------------------partitioning is same as sharding in cosmos db-
