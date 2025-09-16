@@ -4,3 +4,5 @@ PDF need for revision
 quesiton:
 ENtity vs DTO.
 DTO-https://martinfowler.com/eaaCatalog/dataTransferObject.html
+Auditing and transacitons in spring data jpa:-
+https://medium.com/@lavishj77/spring-data-jpa-auditing-and-transaction-management-b9e3246c2968
