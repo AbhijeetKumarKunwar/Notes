@@ -6,3 +6,5 @@ ENtity vs DTO.
 DTO-https://martinfowler.com/eaaCatalog/dataTransferObject.html
 Auditing and transacitons in spring data jpa:-
 https://medium.com/@lavishj77/spring-data-jpa-auditing-and-transaction-management-b9e3246c2968
+Documentation of Rest api:-we need add dependency of springdoc-openapi and it will add the swagger 
+document of our apis through swagger endpoint and we can add more details using annotation from this dependencies.
