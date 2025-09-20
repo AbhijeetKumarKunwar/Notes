@@ -475,3 +475,6 @@ Here is the JSON Schema instance your output must adhere to:
   "additionalProperties" : false
 }```
 }]
+
+
+==>Handling diff type of bean is being mentioned in abov controller.
