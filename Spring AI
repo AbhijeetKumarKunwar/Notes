@@ -1,0 +1,5 @@
+https://github.com/eazybytes/spring-ai.git
+
+section1 controller will intract with open api llm using chatClient using chatClient.prompt(message).call().content();
+method, we will use spring.ai.openai.api-key=<your-openai-api-key> 
+in our properties file to malk connection with open api, there we will have tokens which will be used to intract with llm.\\
