@@ -2,4 +2,301 @@ https://github.com/eazybytes/spring-ai.git
 
 section1 controller will intract with open api llm using chatClient using chatClient.prompt(message).call().content();
 method, we will use spring.ai.openai.api-key=<your-openai-api-key> 
-in our properties file to malk connection with open api, there we will have tokens which will be used to intract with llm.\\
+in our properties file to malk connection with open api, there we will have tokens which will be used to intract with llm.
+
+`````````````````````````What is ChatModel?
+ChatModel is the lower-level abstraction that represents the actual Al model interface. It's the core component that:
+=>Defines the contract for communicating with different Al providers (OpenAI, Azure OpenAI, Anthropic, etc.)
+=>Handles the actual API calls to the Al services
+=>Manages model-specific configurations and parameters
+=>Provides the foundational layer for Al interactions
+Examples of implementations:
+OpenAiChatModel (for OpenAI)
+GeminiChatModel (for Google)
+MistralChatModel, etc.
+\
+==````````````````````What is ChatClient?
+ChatClient is a higher-level, more developer-friendly abstraction built on top of ChatModel. It provides:
+A fluent API for easier interaction with Al models
+Better developer experience with method chaining
+Simplified prompt construction and message handling
+Supports both synchronous and streaming programming models
+ChatClient is the friendly wrapper (or service layer) around a ChatModel.
+It takes care of:
+Building a Prompt
+Managing chat history
+Invoking the model
+Extracting the content
+
+
+----------------------`````````````````````````Relation of ChatModel and chatClient---------
+ChatClient uses ChatModel internally but wraps it with a more
+convenient API. When you use ChatClient, it eventually delegates
+to the underlying ChatModel to make the actual Al service calls.
+-----------------------------------------------how they work together-------------------
+
+How They Work Together
+-Spring Boot Autoconfiguration: When you add Spring Al dependencies, Spring Boot automatically creates ChatModel beans for
+configured Al providers
+-ChatClient.Builder Creation: The framework provides an autoconfigured ChatClient.Builder that's already wired with the
+appropriate ChatModel
+-Fluent API Usage: You use ChatClient's fluent methods to build prompts, which internally get converted to the format
+expected by the ChatModel
+-Execution: ChatClient delegates to ChatModel to send requests to the Al service and handle responses
+Example Flow
+Your Code t ChatClient (fluent API) → ChatModel (AI service integration) → AI Provider API
+This design follows the common pattern of having a low-level technical interface (ChatModel) and a high-level user-friendly
+interface (ChatClient) that makes the framework more accessible while maintaining flexibility for advanced use cases.
+
+                    ------------running ollama----------
+ollama run llama3
+config:-
+spring.ai.model.chat=ollama
+spring.ai.ollama.chat.options.model=llama3.
+same code will work for this alos, since chatModel bean will take care of it and chatClient will intract with ollama
+restApi running on our local http://localhost:11434/, its llm will processed our request on our local matchine, its downlaod
+the model during the time of installation and does not need any internet, larger context version we will install we will
+get more boundry of data.
+
+---------------------------------------------------------
+similerly we can do for Spring Al & Docker and AWS Bedrock.
+
+------------------------Working with Multiple Chat Models in Spring Al---------------
+when we does this we don't rely on chatModel to cretae bean ,since we have multiple model in taht case we explicitly create
+bean of each of model using config and we used accroding to use and it might be used in the cse of fault tolarance.
+->pom will have both dependecny
+
+@Configuration
+public class ChatClientConfig{
+//frame work will inject the dependencies during the application boot.
+@Bean
+public ChatClient openAiChatClient(OpenAiChatModel chatModel) {
+      return ChatClient.create(chatModel);
+@Bean
+public ChatClient ollamaChatClient (OllamaChatModel chatModel)
+  ChatClient.Builder chatClientBulder =ChatClient.builder(ollamaChatModel);
+    return chatClientBulder.build();
+}
+
+-------------------------------------------------------Message role--------------------------------
+Here’s how a typical message sequence might look (in JSON-like format):
+It provides a crucial structural component that helps the model understand the context, intent, and proper flow of dialogue.
+JSON[
+  {"role": "system", "content": "You are a helpful assistant."},
+  {"role": "user", "content": "What is the capital of France?"},
+  {"role": "assistant", "content": "The capital of France is Paris."},
+  {"role": "user", "content": "Tell me a fun fact about Paris."}
+]
+
+
+The system message sets the context.
+The user messages are questions or prompts.
+The assistant messages are the model’s replies.
+
+--------------------------------This is the code used to intract with the llm models------------
+@GetMapping("/chat")
+    public String chat(@RequestParam("message") String message) {
+        return chatClient.prompt(message).call().content();
+    }
+
+when we tried to set the Message role, we will set the context and restrict our AI application to answer to specific set
+of zoner . eg. we have set the system role for answering HR policy context and if we ask anything apart of this,we will
+only get the answer related to HR and company policy only.
+e.g-
+  @GetMapping("/chat")
+    public String chat(@RequestParam("message") String message) {
+        return chatClient
+                .prompt()
+                //.advisors(new TokenUsageAuditAdvisor())
+                .system("""
+                        You are an internal IT helpdesk assistant. Your role is to assist 
+                        employees with IT-related issues such as resetting passwords, 
+                        unlocking accounts, and answering questions related to IT policies.
+                        If a user requests help with anything outside of these 
+                        responsibilities, respond politely and inform them that you are 
+                        only able to assist with IT support tasks within your defined scope.
+                        """)
+                .user(message)
+                .call().content();
+    }
+Questions:-http://localhost:8080/api/chat?message=what are the message role use by llm
+Answer:-Nice to meet you! My name is Emma, and I'm an internal IT helpdesk assistant, 
+trained on a specific set of predefined responses and guidelines. I don't have a human model or personal experiences, 
+but I'm designed to assist employees with their IT-related queries in a helpful and efficient manner.
+
+-----------------------------Understanding Message Roles in LLMs---------------
+we uses default method when we want specific set of message used in every api call, in that case we feed our message during
+client object creation,(it will work as aspect programming)
+=>Creating the ChatClient with a Default System Message
+
+this.chatClient = chatClientBuilder.defaultSystem("
+You are an internal HR assistant...
+""").build();
+
+=>Sets the default behavior/personality of the Al assistant.
+=>Used for general fallback behavior across requests.
+=>Overriding System Message (Optional) in Runtime
+chatClient.prompt()
+.system ("""
+You are an internal IT helpdesk assistant...
+""")
+
+=>
+You want to avoid repeating the same system message or advisor every time.
+You have a consistent role or tone for your assistant.
+
+Overrides the default system message.
+Useful for changing the assistant's role dynamically (e.g., HR instead of IT).
+
+-------------------------Common default methods----------------------
+
+defaultSystem(...) - Defines a default system message -
+which sets the behavior or role of the Al assistant.
+
+defaultAdvisors(...) - Registers advisors like logging or custom filters that
+apply to each interaction.
+chatClientBuilder.defaultAdvisors(new SimpleLoggerAdvisor() (
+
+defaultTools(..)- Registers tools/functions available to the LLM by default.
+chatClientBuilder.defaultTools(
+List.of (myToolClassInstance))
+
+defaultOptions(.) - Allows you to set default configuration options for
+the model request (e.g., temperature, maxTokens, etc.)
+chatClientBuilder
+defaultOptions (ChatOptions.builder().
+temperature(0.3).maxTokens(300).build())
+
+defaultUser(.) - Sets a default user message that will be included in every
+prompt unless overridden.
+
+chatClientBuilder.defaultUser("How can you help me ?");
+
+we can seperate the bean creation of chatClient and it will have system and userdefault promt, if we are not sending any
+promt during call(), it will take that as input promt.
+
+Config class to create Chatclient Bean:-
+@Configuration
+public class ChatConfig {
+
+    @Bean
+    public ChatClient chatClient(ChatClient.Builder builder) {
+        return builder
+                .defaultSystem("""
+                        You are an internal IT helpdesk assistant. Your role is to assist 
+                        employees with IT-related issues such as resetting passwords, 
+                        unlocking accounts, and answering questions related to IT policies.
+                        If a user requests help with anything outside of these 
+                        responsibilities, respond politely and inform them that you are 
+                        only able to assist with IT support tasks within your defined scope.
+                        """)
+                .defaultUser("how can i help you")
+                .build();
+    }
+
+}
+--------------------------------------------------------Using Prompt Templates in Spring Al-----------
+Why Use Prompt Templates?
+
+=>Simplifies prompt construction
+=>Makes prompts reusable and maintainable
+=>Keeps logic and text cleanly separated
+=>Supports parameterized placeholders (like {customerName})
+
+Where can Prompt Templates Live?
+You can store them in:
+src/main/resources/promptTemplates/userPromptTemplate.st
+File extension: .st (StringTemplate)
+
+e,g-
+A customer named {customerName} sent the following message:
+               "{customerMessage}"
+
+Write a polite and helpful email response addressing the issue.
+Maintain a professional tone and provide reassurance.
+
+Respond as if you're writing the email body only. Don't include subject,
+signature
+
+
+
+How to Use in Code
+@Value("classpath:/promptTemplates/userPromptTemplate.st")
+Resource userPromptTemplate;
+
+----------------------------------Using Prompt Templates in Spring Al--------------
+
+chatClient
+        .prompt()
+                .system("""
+                        You are a professional customer service assistant which helps drafting email
+                        responses to improve the productivity of the customer support team
+                        """)
+                .user(promptTemplateSpec ->
+                        promptTemplateSpec.text(userPromptTemplate)
+                                .param("customerName", customerName)//dynamic values will be coming from req parm
+                                .param("customerMessage", customerMessage))//dynamic values will be coming from req parm
+                .call().content();
+
+uri:->http://localhost:8080/api/email?customerName=Abhijeet&customerMessage=I am facing issue in my password reset
+
+Response:-
+Dear Abhijeet,
+
+Thank you for reaching out to us about your password reset issue. We apologize that you're experiencing trouble with resetting your password, and we're here to help.
+
+Could you please provide more details about what's happening when you try to reset your password? For example, are you receiving an error message, or is the process not completing successfully?
+
+We'll do our best to troubleshoot the issue and get you back up and running as quickly as possible. In the meantime, if you have any further questions or concerns, please don't hesitate to let us know.
+
+We're committed to providing excellent support, and we appreciate your patience and understanding as we work through this with you.
+
+Best regards,
+
+
+---------------------------------------------------Prompt Stuffing-----------------------------------------
+Prompt Stuffing = Giving the LLM an open book before answering a question.
+You include contextual data or reference text along with the user's question.
+The LLM uses this extra content to answer the question accurately — even if it was not pre-trained on the topic.
+This technique is also known as in-context learning or retrieval-augmented prompting (when done programmatically).
+THis is limited to have info like of upto 100 lines, for more we uses RAG for trained our model.
+e,g-----------------
+
+Example: Internal company policy lookup
+Prompt (Stuffed):
+"According to the company's HR policy, employees are
+eligible for 18 days of paid leave annually. Unused leave
+can be carried over to the next year."
+Question:
+How many paid leaves do employees get each year?
+LLM Answer:
+Employees are eligible for 18 days of paid leave annually.
+
+In the coming sections, we will learn how to apply a technique called Retrieval Augmented
+Generation (RAG) to provide relevant context in prompts without exceeding the token limit.
+------------------------------------------------
+since, our model is stuff with this data:-https://github.com/eazybytes/spring-ai/blob/main/section02/springai/src/main/resources/promptTemplates/systemPromptTemplate.st
+we will be getting answer by llm by computing this set of data.
+e.g:-http://localhost:8080/api/prompt-stuffing?message=i have used 5 leave this year, how many leves would be there next year
+REsponse:-
+According to our HR Policy, employees are entitled to 18 days of paid leave annually. Since you've already used 5 leaves this year, that means you still have:
+
+18 - 5 = 13
+
+days of paid leave left for the current year.
+
+Regarding next year, up to 8 unused leave days can be carried over to the next year. In your case, since you have 13 days left this year, you would be able to carry over:
+
+13 (remaining leave) - 8 (carryover limit) = 5
+
+So, you would start the new year with a balance of 5 carry-over leave days.
+
+Code where we handle the promt stuffing:-
+@GetMapping("/prompt-stuffing")
+    public String promptStuffing(@RequestParam("message") String message) {
+        return chatClient
+                .prompt()
+                .system(systemPromptTemplate)//this will override the system promt we set during bean initialization.
+                .user(message)
+                .call().content();
+    }
