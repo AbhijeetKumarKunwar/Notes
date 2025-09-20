@@ -300,3 +300,178 @@ Code where we handle the promt stuffing:-
                 .user(message)
                 .call().content();
     }
+=>Prompt stuffing is ineffective for large amounts of data due to several major drawbacks, including cost, latency, token limits, and performance degradation. For this reason, 
+the industry-standard approach for handling large datasets is Retrieval-Augmented Generation (RAG)
+
+----------------------------------------------------Advisiors(work same like filters in spring-----------------
+What Are Advisors?
+Advisors are components that act like interceptors, modifying or enhancing the flow of AI interactions, 
+including requests and responses. They allow developers to encapsulate recurring patterns and cross-cutting concerns 
+into reusable, portable units, much like Aspect-Oriented Programming (AOP) in traditional Spring applications. 
+In Spring Al, advisors are like interceptors or middleware for your prompt flow.
+They allow you to:
+->Pre-process or post-process prompt data
+->Add custom logging or auditing
+->Inject additional behavior without modifying core logic
+->Chain multiple behaviors cleanly
+Where Advisors Fit
+=>User ChatClient t [Advisors] LLM → Response → [Advisors] User
+Best Practices
+Keep advisors stateless or request-scoped
+Chain multiple advisors if needed
+Avoid altering the meaning of prompts unless intentional
+Use advisors for cross-cutting concerns, not core logic
+=======================================================When we config default advisor for logger, we cansee this =========
+Default logging during chatClient bean creation, it will response the json intracted with llm, similerly we
+can use the set of advisior which will be used to validate sensitive words ect.
+
+public ChatController(ChatClient.Builder chatBuilder) {
+        this.chatClient = chatBuilder.defaultAdvisors(new SimpleLoggerAdvisor()).build();
+    }
+
+Resposne:-
+ "result" : {
+    "output" : {
+      "messageType" : "ASSISTANT",
+      "metadata" : {
+        "messageType" : "ASSISTANT"
+      },
+      "toolCalls" : [ ],
+      "media" : [ ],
+      "text" : "I don't have a personal name, but I'm an AI designed to assist and communicate with humans. I'm a type of language model, specifically a large language model (LLM), trained by Meta AI.\n\nAs for my \"model\" or architecture, I'm based on the transformer model introduced in the paper \"Attention is All You Need\" by Vaswani et al. in 2017. My specific architecture is a variant of this model, with some modifications and improvements made by my developers to enhance my language understanding and generation capabilities.\n\nIn terms of specific numbers, I was trained using a combination of supervised and unsupervised learning methods on a massive dataset of text from various sources, including books, articles, and online content. My training data is constantly updated and expanded to keep me up-to-date with the latest developments in language and knowledge.\n\nSo, while I don't have a personal name, you can think of me as \"LLaMA\" (Large Language Model Assistant) - a friendly AI designed to help answer your questions and provide information on a wide range of topics!"
+    },
+    "metadata" : {
+      "finishReason" : "stop",
+      "contentFilters" : [ ],
+      "empty" : true
+    }
+  },
+  "metadata" : {
+    "id" : "",
+    "model" : "llama3",
+    "rateLimit" : {
+      "requestsLimit" : 0,
+      "tokensLimit" : 0,..............
+
+
+->We have two advisors class which we implement for our custom advisor that are CallAdvisior and StreamAdvisior
+In Spring AI, CallAdvisor and StreamAdvisor are interfaces used to intercept and modify the behavior of AI model interactions.
+The key difference between them lies in the type of response they are designed to handle: CallAdvisor for synchronous,
+blocking responses and StreamAdvisor for asynchronous, streaming responses. 
+
+=>we have implemented our advisior here:-
+public class TokenUsageAuditAdvisor implements CallAdvisor {//we will use the overided method to put our logic here
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenUsageAuditAdvisor.class);
+
+    @Override
+    public ChatClientResponse adviseCall(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
+        ChatClientResponse chatClientResponse = callAdvisorChain.nextCall(chatClientRequest);//this will do the llm call,
+          //we can use the before method to perform action before llm call, this signature can be taken from existing 
+          //code implementation from CallAdvisor class.
+        ChatResponse chatResponse = chatClientResponse.chatResponse();
+        if(chatResponse.getMetadata() != null) {
+            Usage usage = chatResponse.getMetadata().getUsage();//we can get the no of token used.
+
+            if(usage != null) {
+                logger.info("Token usage details : {}",usage.toString());
+            }
+        }
+        return chatClientResponse;
+    }
+
+================================================using advisior at method level======================
+@GetMapping("/chat")
+    public String chat(@RequestParam("message") String message) {
+        return chatClient.prompt()
+                .advisors(List.of(new SimpleLoggerAdvisor(),new TokenUsageAuditAdvisor()))//list of advisior
+                .user(message)
+                .call().content();
+
+    }
+
+--------------------------------------What is ChatOptions?-----------------------------------
+ChatOptions is a configuration in Spring Al that allows you to customize how a language model behaves during chat/completion calls.
+Think of it like a "tuning panel" for your Al model - you can set limits, adjust creativity, randomness, verbosity, control response
+length, and more.
+
+Option                                Meaning
+model                 Which LLM model to use (e.g., gpt-4, gpt-3.5-turbo, etc.)
+frequencyPenalty      Reduces repetition. Higher = less repetition
+presencePenalty        Encourages mentioning new topics
+temparature            Controls creativity. 0 = focused, 1 = random
+topP                    Controls randomness (nucleus sampling)
+stopSequences         Stop generating when specific phrases are found
+maxTokens              Maximum number of tokens (words/chars) in the reply
+topK                  controls how many top choices are considered
+
+
+e.g:-it can be applied at bean cration and controller level too:- this can be controller by .properties files too
+public ChatController(ChatClient.Builder chatBuilder) {
+        ChatOptions option=ChatOptions.builder()
+                .maxTokens(10) //max response token
+                .temperature(.8) 
+                .topK(10) /top 10 answer
+                .frequencyPenalty(.8)
+                .build();
+
+        this.chatClient = chatBuilder.defaultAdvisors(new SimpleLoggerAdvisor()).defaultOptions(option).build();
+    }
+
+  `````````````````````````````````````````````````Spring Al ChatClient - Response Types Explained```````````````````````
+When you invoke.Call() on a ChatClient, there are different ways to get the result, depending on what you want to do with it.
+Method                                       What It Returns                                   Use Case
+content()                       Just the response as a String                         Simple use case - display or print reply
+chatResponse()                   A ChatResponse object                                 Get full details like token usage
+chatClientResponse()               A ChatClientResponse object                           Useful in RAG - includes context & metadata
+entity(...) methods                 Converts response to POJOs                       Getting Java Objects (Structured Output)   
+
+
+To stream reponses, we can use.stream() instead of.call()
+Good for real-time or chunked responses (like streaming output to Ul
+
+->@GetMapping("/stream")
+    public Flux<String> stream(@RequestParam("message") String message) {
+        return chatClient.prompt().user(message).stream().content();
+    }
+
+=>when we use stream , we have to make the return type Flux, its like steaming the data as it reacived , but in other case
+if we hit the chat endpoint,we were waiting to get whole response then it is being respond to the postman, but here we 
+have tired from the browser and we can see the dta is being generated and coming to screesn sequenctialluy.
+by hitting this enpdoint:-http://localhost:8080/api/stream?message=what%20is%20the%20hr%20policies
+
+---------------------------------------------------------Structured response form llm-----------
+here in this controller we are using entity in the response to structure our response into POJO, when llm is being called
+the instruction will be sent by spring AI to format in the requiured structure, since, default format is string response of
+llm, here we have method which sent the instructions:-
+e.g spring ai metthod:-
+
+ public String getFormat() {
+        return "Respond with only a list of comma-separated values, without any leading or trailing text.\nExample format: 
+foo, bar, baz\n";
+    }
+
+THis is what being sent by spring AI in case of entity:---
+its clearly sending the entity structure which we are trying to accept.
+
+Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation.
+Do not include markdown code blocks in your response.
+Remove the ```json markdown from the output.
+Here is the JSON Schema instance your output must adhere to:
+```{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "type" : "object",
+  "properties" : {
+    "cities" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "country" : {
+      "type" : "string"
+    }
+  },
+  "additionalProperties" : false
+}```
+}]
