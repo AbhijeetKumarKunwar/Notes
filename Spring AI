@@ -533,3 +533,9 @@ public interface ChatMemory {
 
 
 -------
+Linkage of ChatMemory:-
+Abstraction: ChatMemory is the top-level interface for managing conversation history.
+Persistence: ChatMemoryRepository is the lower-level interface for storage logic.
+Behavior: MessageWindowChatMemory wraps a ChatMemoryRepository to provide intelligent windowing behavior, making the chat memory token-efficient.
+Implementation: JdbcChatMemoryRepository provides a concrete, persistent storage mechanism by implementing ChatMemoryRepository and using JDBC to talk to a database like H2.
+Integration: All these components are wired together, often via dependency injection in a framework like Spring, to provide a complete, persistent chat history solution
