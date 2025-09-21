@@ -542,3 +542,41 @@ Integration: All these components are wired together, often via dependency injec
 
 chatMemeory:- impments TokenWindowChatMemory,MessageWindowChatMemory
 ChatMemoryRepository-> implemnts JdbcChatMemoryRepository,InMemoryChatMemoryRepository
+
+
+
+
+@GetMapping("/random/chat")
+    public ResponseEntity<String> randomChat(@RequestHeader("username") String username,
+                                             @RequestParam("message") String message) {
+        SearchRequest searchRequest =
+                SearchRequest.builder().query(message)
+                          .topK(3) //we will get three top data which are very near to our message
+                        .similarityThreshold(0.5) //it will include the matching till half
+                          .build();//this will set the query for the vector db.
+        List<Document> similarDocs =  vectorStore.similaritySearch(searchRequest);
+        String similarContext = similarDocs.stream()
+                .map(Document::getText)
+                .collect(Collectors.joining(System.lineSeparator()));//it will return the context from vector db
+        String answer = chatClient.prompt()
+                .system(promptSystemSpec -> promptSystemSpec.text(promptTemplate)
+                        .param("documents", similarContext))//we will try to put the context to the promt template where instructions are given.
+                .advisors(a -> a.param(CONVERSATION_ID, username)) //it will save our intraction for chat history
+                .user(message)
+                .call().content();
+        return ResponseEntity.ok(answer);
+    }
+
+
+promt template:-{} doucument will be replaced by context respnse from vector db and if no context coming from vectorstore, it will response i don't know.
+
+You are a helpful assistant, answering questions about EazyBytes company policies to it's
+employees.
+
+Given the context in the DOCUMENTS section and no prior knowledge, answer the employee's
+question. If the answer is not in the DOCUMENTS section, then reply with "I don't know".
+
+DOCUMENTS:
+----------
+{documents}
+----------
