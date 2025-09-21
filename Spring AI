@@ -474,7 +474,62 @@ Here is the JSON Schema instance your output must adhere to:
   },
   "additionalProperties" : false
 }```
-}]
 
 
-==>Handling diff type of bean is being mentioned in abov controller.
+
+```````````````````````````````````````````````````Chat Memory using Spring Al-----------------------
+Chat memory in Spring AI is the mechanism for maintaining conversational context across multiple interactions with a stateless Large Language Model (LLM). 
+By storing and retrieving past messages, it enables the AI to provide coherent and context-aware responses.
+Key components and details include:
+=>when we saying my name is axy, but in next query if we ask what is your name, it does not answer,
+
+when we have this setup:-
+public ChatMemoryController(ChatClient.Builder chatBuilder, ChatMemory chatMemory) {
+        Advisor logger= new SimpleLoggerAdvisor();
+        Advisor memory = MessageChatMemoryAdvisor.builder(chatMemory).build();
+        this.chatClient = chatBuilder.defaultAdvisors(List.of(logger, memory)).build();
+
+    }
+
+=>ChatMemory is an interface that provides a core abstraction for managing conversational history. It serves as the primary component for enabling stateful,
+multi-turn conversations with a large language model (LLM), which are otherwise stateless. The interface defines methods to add, retrieve, and
+clear messages associated with a specific conversation ID. 
+=>MessageChatMemoryAdvisor is a component that enables a large language model (LLM) to retain conversational context by including the history of messages in the prompt. 
+It is a built-in "advisor" that modifies the chat request before it is sent to the LLM. 
+
+How Chat Memory Works:-
+ChatMemory: Defines what to store (e.g, last N messages)
+Sample implementation class MessageWindowChatMemory
+=>ChatMemoryRepository: Defines contract for
+storing and retrieving chat messages.
+=>Using InMemoryChatMemoryRepository we can store the chat
+memory inside In-Memory (default)
+=>Using JdbcChatMemoryRepository we can store the chat
+memory in a DB like H2, MySLQ, Postgres etc.
+
+
+How MessageChatMemoryAdvisor works:-----------
+The process involves these steps: 
+=>Intercepts the request: A chat request is initiated by the user.
+=>Retrieves memory: The MessageChatMemoryAdvisor retrieves the conversation history from an underlying ChatMemory implementation. By default, Spring AI uses an InMemoryChatMemory, which stores messages in a ConcurrentHashMap.
+=>Adds messages to prompt: The advisor takes the retrieved messages and includes them as a collection of message objects in the outgoing request to the AI model. This maintains the conversational structure.
+=>Updates memory: After the AI model responds, the advisor updates the ChatMemory with the new user and AI messages. 
+
+-------->Here when we are using default conversationId , it will override the messages of if we update new name , so,we update our code same liek chat gpt (wrapper of llm)
+they use session id to remember the chat, so similerly we can set our conversationId with userId, we will override this, so, we will able to get the details based on
+userId set from postman.
+---------->
+
+@GetMapping("/chat-memory")
+    public String chatMemory(@RequestHeader("userId") String userId, @RequestParam("message") String message) {
+        return chatClient.prompt().
+         advisors(advisorSpec -> advisorSpec.param(CONVERSATION_ID,userId))
+        .user(message).call().content();
+    }
+--Now chat memory will have details of our converstain based on customerId.
+public interface ChatMemory {
+    String DEFAULT_CONVERSATION_ID = "default"; ///ealrier this was being used
+    String CONVERSATION_ID = "chat_memory_conversation_id";//now this will be used in case of custom id.
+
+
+-------
