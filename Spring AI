@@ -685,3 +685,7 @@ modify the sensitive inofmation before sending to llm.
     }
 DocumentPostProcessor->this interface has two method apply and process, we can overide these method to impment our post
 retrival logic.
+Now since, we have masked our mail and phone numer here:-https://github.com/eazybytes/spring-ai/blob/main/section05/springai/src/main/java/com/eazybytes/springai/rag/PIIMaskingDocumentPostProcessor.java
+its not been sent to llm and we are also not geting in response.
+http://localhost:8080/api/rag/document/chat?message=डेलोइट में नोटिस अवधि क्या है?
+Minimum 36-day notice period for resignation.
