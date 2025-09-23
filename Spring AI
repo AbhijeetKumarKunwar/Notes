@@ -580,3 +580,51 @@ DOCUMENTS:
 ----------
 {documents}
 ----------
+
+
+---------------------------------------------------Rag using qdrant vector store ------------
+SearchRequest searchRequest =
+                SearchRequest.builder().query(message).topK(3).similarityThreshold(0.5).build();//here we are tuning
+                                                                        //search query of our message over vectorestore
+        List<Document> similarDocs =  vectorStore.similaritySearch(searchRequest);//actual semantic search on vector
+        if(similarDocs.isEmpty()){
+            return ResponseEntity.ok("No relevant information found in the documents.");
+        }
+        String similarContext = similarDocs.stream()
+                .map(Document::getText)
+                .collect(Collectors.joining(System.lineSeparator()));//converting sementic resonse to string
+        String answer = chatClient.prompt()
+                .system(promptSystemSpec -> promptSystemSpec.text(promptTemplate)
+                        .param("documents", similarContext)) //we are stuffing the vector context to promt template
+                .advisors(a -> a.param(CONVERSATION_ID, username))//chatMemory for chat history
+                .user(message)
+                .call().content();
+        return ResponseEntity.ok(answer);
+
+----------------------------------------------RetrievalAugmentationAdvisor-----------------
+
+we can remove all serach tuning code, searching over vector ,and passing it to the sytem promt using this .
+we just need to pass this advisior to Chatclient.
+
+@Bean
+    RetrievalAugmentationAdvisor retrievalAugmentationAdvisor(VectorStore vectorStore) {
+        return RetrievalAugmentationAdvisor.builder()
+                .documentRetriever(VectorStoreDocumentRetriever.builder().vectorStore(vectorStore)
+                        .topK(3).similarityThreshold(0.5).build())
+                .build();
+    }
+
+This bean will be passed to our chat client:-
+@Bean("chatMemoryChatClient")
+    public ChatClient chatClient(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory,RetrievalAugmentationAdvisor retrievalAugmentationAdvisor) {
+        Advisor loggerAdvisor = new SimpleLoggerAdvisor();
+        Advisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
+        return chatClientBuilder
+                .defaultAdvisors(List.of(loggerAdvisor, memoryAdvisor,new TokenUsageAuditAdvisor(),retrievalAugmentationAdvisor))
+                .build();
+    }
+
+->so, retrievalAugmentationAdvisor will set the search tuning,and its has vector data access, once it will be used
+by chatclient user, it will autometically pull the data from vector and conetext will be pased against the user message.
+
+
