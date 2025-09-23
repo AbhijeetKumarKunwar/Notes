@@ -626,5 +626,6 @@ This bean will be passed to our chat client:-
 
 ->so, retrievalAugmentationAdvisor will set the search tuning,and its has vector data access, once it will be used
 by chatclient user, it will autometically pull the data from vector and conetext will be pased against the user message.
-
-
+->it will take care of no context, liek if data is not there in vector, it will not generate eg.:-
+http://localhost:8080/api/rag/document/chat?message=what is notice period in deloiotte
+answe:-i don't know
