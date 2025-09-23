@@ -689,3 +689,9 @@ Now since, we have masked our mail and phone numer here:-https://github.com/eazy
 its not been sent to llm and we are also not geting in response.
 http://localhost:8080/api/rag/document/chat?message=डेलोइट में नोटिस अवधि क्या है?
 Minimum 36-day notice period for resignation.
+-------------------------------------------------How Embedding happens in spring boot--------------------
+Acutally embedding in not done by spring framework, it calls llm model to do it in batches according to the conetext size 
+every llm provider has EmbeddingModel->call() method where out data is being converted to numeric values for semantic search,
+then it will be inserted to the vectorstore.
+
+
