@@ -629,3 +629,10 @@ by chatclient user, it will autometically pull the data from vector and conetext
 ->it will take care of no context, liek if data is not there in vector, it will not generate eg.:-
 http://localhost:8080/api/rag/document/chat?message=what is notice period in deloiotte
 answe:-i don't know
+
+->DocumentsRetriver can pull the data from any data source like web search, db ect.
+
+SImiler to this:-https://github.com/eazybytes/spring-ai/blob/main/section05/springai/src/main/java/com/eazybytes/springai/rag/WebSearchDocumentRetriever.java
+
+we can implement any search by implementing DocumentRetriever class and we can overide method, in this case we are getting
+context from tavily api and response from the tavily will be used as context to llm and our llm will respond accordingly.
