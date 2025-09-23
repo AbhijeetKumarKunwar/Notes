@@ -627,6 +627,16 @@ This bean will be passed to our chat client:-
 ->so, retrievalAugmentationAdvisor will set the search tuning,and its has vector data access, once it will be used
 by chatclient user, it will autometically pull the data from vector and conetext will be pased against the user message.
 ->it will take care of no context, liek if data is not there in vector, it will not generate eg.:-
+THis is being taken care by RetrievalAugmentationA dvisor impl class:-
+
+public List<Document> retrieve(Query query) {
+        Assert.notNull(query, "query cannot be null");
+        Filter.Expression requestFilterExpression = this.computeRequestFilterExpression(query);
+        SearchRequest searchRequest = SearchRequest.builder().query(query.text()).filterExpression(requestFilterExpression).similarityThreshold(this.similarityThreshold).topK(this.topK).build();
+        return this.vectorStore.similaritySearch(searchRequest);
+    }
+
+
 http://localhost:8080/api/rag/document/chat?message=what is notice period in deloiotte
 answe:-i don't know
 
@@ -636,3 +646,22 @@ SImiler to this:-https://github.com/eazybytes/spring-ai/blob/main/section05/spri
 
 we can implement any search by implementing DocumentRetriever class and we can overide method, in this case we are getting
 context from tavily api and response from the tavily will be used as context to llm and our llm will respond accordingly.
+
+
+````````````````````````````````````````````````````Advance Rag with pre-Retrival-------------
+ @Bean
+    RetrievalAugmentationAdvisor retrievalAugmentationAdvisor(VectorStore vectorStore,ChatClient.Builder chatClientBuilder){
+        return RetrievalAugmentationAdvisor.builder()
+                .queryTransformers(TranslationQueryTransformer.builder()//here we are calling transformer to do transalation to
+                                                                      //to english before document retrival from vector db which is in eng.
+                        .chatClientBuilder(chatClientBuilder.clone())
+                        .targetLanguage("english").build())
+                .documentRetriever(VectorStoreDocumentRetriever.builder().vectorStore(vectorStore)
+                        .topK(3).similarityThreshold(0.5).build())
+                .build();
+    
+
+input:-http://localhost:8080/api/rag/document/chat?message=डेलोइट में नोटिस अवधि क्या है?
+
+output from vectore store from pdf:-
+According to the context, the notice period in EazyBytes is 36 days for resignation, which can be negotiated by sending an email to tutor@eazybytes.com or calling 123-456-7890.
