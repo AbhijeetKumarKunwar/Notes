@@ -694,4 +694,75 @@ Acutally embedding in not done by spring framework, it calls llm model to do it 
 every llm provider has EmbeddingModel->call() method where out data is being converted to numeric values for semantic search,
 then it will be inserted to the vectorstore.
 
+--------------------------------------------Tools ------------------------------------
+Tool is the important concept which is used to called by our LLM to provide argumented data which is used to response the
+user question more accureteluy, tool provide real time data ,database data, api call etc to provide data to llm. we got
+output based on our data.
+->when user ask any question, it will take message type user along with tool details to the llm, llm will based on user query
+it will search and if it does not get proper answer then it will look over the which tool can be leverage to anser the 
+user question that is why @Tool descripiton is very important to identify the llm to call the tool and it will query t
+the tool with finishMessage->Tool calls , spring ai ToolcallingManager  will respond with the tool logic and its response to llm, now llm will 
+respond the spring based on tool answer. with finish resons stop.
+->we can see this in DefaultToolCalling class where llm will pass the request parm to our method based on our query to llm.
 
+-->Toole context:-This is like spring session, which where data is set in the context of application, we save data hhere
+to reduce the dependencies on llm to send the data to our tool instied we take it form toolcontext.
+--------------------------------------------------------Help Desk using tool--------------------
+==>System Promt
+You are a virtual Helpdesk Assistant for EazyBytes, responsible for assisting employees and
+customers with their issues.
+
+Your primary goal is to provide clear, accurate, and helpful solutions to common problems.
+If a user’s issue cannot be resolved through your response, offer to:
+
+Create a new helpdesk ticket on their behalf
+Check the status of existing helpdesk tickets
+Or guide them to the appropriate support channel if needed
+Always aim to be polite, proactive, and solution-oriented.
+
+If there is already a ticket is present regarding the same issue, please don't create duplicate
+ones. When responding about the status of the existing issues, please keep the response short
+with status of the ticket and ETA.
+
+
+-----------===>TOOLS---- which will be called by llm based on the system promt given:-
+@Tool(name = "createTicket", description = "Create the Support Ticket", returnDirect = true)
+    String createTicket(@ToolParam(description = "Details to create a Support ticket")
+            TicketRequest ticketRequest, ToolContext toolContext) {
+        String username = (String) toolContext.getContext().get("username");
+        LOGGER.info("Creating support ticket for user: {} with details: {}", username, ticketRequest);
+        HelpDeskTicket savedTicket = service.createTicket(ticketRequest,username);
+        LOGGER.info("Ticket created successfully. Ticket ID: {}, Username: {}", savedTicket.getId(), savedTicket.getUsername());
+        return "Ticket #" + savedTicket.getId() + " created successfully for user " + savedTicket.getUsername();
+    }
+
+    @Tool(description = "Fetch the status of the tickets based on a given username")
+    List<HelpDeskTicket> getTicketStatus(ToolContext toolContext) {
+        String username = (String) toolContext.getContext().get("username");
+        LOGGER.info("Fetching tickets for user: {}", username);
+        List<HelpDeskTicket> tickets =  service.getTicketsByUsername(username);
+        LOGGER.info("Found {} tickets for user: {}", tickets.size(), username);
+        // throw new RuntimeException("Unable to fetch ticket status");
+        return tickets;
+    }
+
+---------------------------------->Controller-------------
+@GetMapping("/help-desk")
+    public ResponseEntity<String> helpDesk(@RequestHeader("username") String username,
+            @RequestParam("message") String message) {
+        String answer = chatClient.prompt()
+                .advisors(a -> a.param(CONVERSATION_ID, username))
+                .user(message)
+                .tools(helpDeskTools)
+                .toolContext(Map.of("username", username))// we are setting the userNmae in tool context, which can be retrive anhy where.
+                .call().content();
+        return ResponseEntity.ok(answer);
+    }
+
+->when user will ask ->i am not able to login
+llm->message to ack the issue then it will ask for ticket creation
+->user=>yes
+llm->it will crate the ticket with all the dtails
+->again user will ask i am not able to login ->it will shared the ticket id and will give the eta.
+
+THis is how llm will use our both the tool based on system promt and will perform action by own.
