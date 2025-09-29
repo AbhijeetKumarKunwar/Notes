@@ -704,7 +704,8 @@ user question that is why @Tool descripiton is very important to identify the ll
 the tool with finishMessage->Tool calls , spring ai ToolcallingManager  will respond with the tool logic and its response to llm, now llm will 
 respond the spring based on tool answer. with finish resons stop.
 ->we can see this in DefaultToolCalling class where llm will pass the request parm to our method based on our query to llm.
-
+->While sending details of promt and message to llm, spring will also send the tool details along with json schema 
+using which llm calls tool.we can see that by placing the debug point in the advisor metthods.
 -->Toole context:-This is like spring session, which where data is set in the context of application, we save data hhere
 to reduce the dependencies on llm to send the data to our tool instied we take it form toolcontext.
 --------------------------------------------------------Help Desk using tool--------------------
@@ -766,3 +767,14 @@ llm->it will crate the ticket with all the dtails
 ->again user will ask i am not able to login ->it will shared the ticket id and will give the eta.
 
 THis is how llm will use our both the tool based on system promt and will perform action by own.
+-------------------------------returnDirect = truе-----------------------------
+The returnDirect flag of @Tools annotation tells Spring Al not to send the tool's output back to the Al model for further
+processing. Instead, it immediately returns the tool's result directly as the final response to the user (or the caller).
+
+@Tool (description = "Create the Support Ticket", returnDirect = truе)
+
+When to Use returnDirect = true
+Use it when:
+The tool generates a final, human-readable message.
+You don't want the model to alter, summarize, or continue the reasoning after the tool execution.
+You want to reduce latency by skipping the post-processing step.
