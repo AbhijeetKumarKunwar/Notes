@@ -778,3 +778,9 @@ Use it when:
 The tool generates a final, human-readable message.
 You don't want the model to alter, summarize, or continue the reasoning after the tool execution.
 You want to reduce latency by skipping the post-processing step.
+------------------------------------------------MCP----------------------
+
+we have lots of mcp server listed here:-https://github.com/modelcontextprotocol/servers
+we can use it to integrate with our spring ai and we have to add json file and read it through the 
+properites files like:-
+this will used to intract with the developed mcp servers tool to answer our query.
