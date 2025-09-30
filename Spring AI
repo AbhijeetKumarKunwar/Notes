@@ -784,3 +784,13 @@ we have lots of mcp server listed here:-https://github.com/modelcontextprotocol/
 we can use it to integrate with our spring ai and we have to add json file and read it through the 
 properites files like:-
 this will used to intract with the developed mcp servers tool to answer our query.
+=>Notes from pdf.
+->we can test out mcp server using one of the node mcp server:-
+npx @modelcontextprotocol/inspector->use this on cmd and this will launched one localhost site
+where we can pass:-in our case of local mcp server
+Transport Type-stdio
+Command-java
+Arguments-> -jar path of jar spring boot applicationn.
+
+once we will connect with this, we will get the list of tools where we can make calls to the tools and used taht.
+->MP server code:-https://github.com/eazybytes/spring-ai/tree/main/section07/mcpserverstdio
