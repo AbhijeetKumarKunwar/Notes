@@ -794,3 +794,32 @@ Arguments-> -jar path of jar spring boot applicationn.
 
 once we will connect with this, we will get the list of tools where we can make calls to the tools and used taht.
 ->MP server code:-https://github.com/eazybytes/spring-ai/tree/main/section07/mcpserverstdio
+
+
+How mcp server work when no llm involve ?
+1. Tool definition and registration
+You create a standard Spring service method and annotate it with @Tool. The annotation tells Spring AI to expose this method as a tool. The description you provide is critical, as it is how clients discover and understand your tool's purpose.
+The Spring AI MCP Server Boot Starter auto-configures your application to discover these annotated methods.
+Behind the scenes, it registers a ToolCallback for each method, effectively mapping your Java code to the MCP protocol. 
+Tool back registration:-
+@Bean
+    List<ToolCallback> toolCallbacks(HelpDeskTools helpDeskTools) {
+        return List.of(ToolCallbacks.from(helpDeskTools));
+    }
+
+
+ The MCP server exposes tools via a protocol
+The MCP server exposes its registered tools to the network through a transport layer, such as Server-Sent Events (SSE) over HTTP.
+It serves the tool specifications, which are essentially JSON schemas of your tool's name, description, and input parameters. 
+3. An external MCP client discovers and calls the tool
+An external application (the "MCP client"), which can be an LLM agent, a command-line tool, or another microservice, connects to your MCP server.
+The client sends a request over the MCP protocol (e.g., JSON-RPC via SSE) asking for the list of available tools.
+Once the client knows what tools are available, it can send a request to call a specific tool, including the necessary input parameters based on the tool's JSON schema. 
+4. The MCP server executes the tool
+The MCP server receives the inbound tool-call request from the client.
+The Spring AI framework maps the incoming request to the correct @Tool-annotated method in your Java code and executes it with the parameters provided by the client.
+Your tool (the method) runs your business logic. 
+5. The result is returned to the client
+The server captures the tool's return value and sends it back to the client as part of the MCP response.
+The client (for instance, an LLM agent) can then use this result to formulate a response to the end-user. 
+
