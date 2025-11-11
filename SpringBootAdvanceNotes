@@ -8,3 +8,35 @@ Auditing and transacitons in spring data jpa:-
 https://medium.com/@lavishj77/spring-data-jpa-auditing-and-transaction-management-b9e3246c2968
 Documentation of Rest api:-we need add dependency of springdoc-openapi and it will add the swagger 
 document of our apis through swagger endpoint and we can add more details using annotation from this dependencies.
+                            -:Strangler pattern for microservice migration:-
+https://www.geeksforgeeks.org/system-design/strangler-pattern-in-micro-services-system-design/
+
+                                                          ----Docker ------
+when we are using cloud services, cloud service providers have their physical infar at their data centers called servers but those are huge infra so, they can
+not be given to single org .so, with help of Hypervisior concept they divide the servers resouces like ram, memory etc viutually into different parts called virtual
+Matchine(VM), these vms are work as computer having memomory,os etc, so, we can use these vms according to our need of our application .
+->Suppose we want to run our one of the microservices to the vm so, we need to install java version needed, data base and other dependencies so,we can run our serivce but
+there is one issue with it,its not sure that our service will need all the resouces of the vm , in that case it will do the over price and for n number of services
+we need to have same number of vm which is not a good practice. neither we can deploye all our services to same vm , that might cause resouces issue, dependencies issue
+like java version,diff db etc.similerly scaling will be required manual intervention so, this way vm are not right for our microservices.
+
+  VM
+vm(os,libranry etc)
+Hypervisior
+Servers
+
+solution of this problem is Container->its name suggest it contains all the required dependencies for particular service(simile ship container contains all needed resouces
+in it for like aaple container will have ac in it)
+
+COntainers
+container1(lib,dependecies)
+container engine(Docker)
+Host OS
+Servers
+
+=>Even os is not there in container so,its light weight  and its super quick to restart  and destroy.
+->WE will create image of our container which will be representation of our container, we can create any no of container from image like any no of obj we can create from
+java class.
+->Docker container is running repsentation of running image.
+
+Follow notes from -file:///C:/Users/abhijeetkumar5/Desktop/LearningNotes-main/Learning/java%20interview%20questions/Advance%20spring%20boot/Master+Microservices+with+SpringBoot,Docker,Kubernetes.pdf
