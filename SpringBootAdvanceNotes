@@ -40,3 +40,25 @@ java class.
 ->Docker container is running repsentation of running image.
 
 Follow notes from -file:///C:/Users/abhijeetkumar5/Desktop/LearningNotes-main/Learning/java%20interview%20questions/Advance%20spring%20boot/Master+Microservices+with+SpringBoot,Docker,Kubernetes.pdf
+
+
+                                                                      Redis
+download and unzip and start server, it will ready for accpeting traffic.
+:-https://github.com/microsoftarchive/redis/releases/tag/win-3.2.100
+Redis (which stands for REmote DIctionary Server) is an open-source, in-memory data structure store that is used as a database, cache, and message broker. 
+Because all data resides in main memory (RAM), it delivers extremely high performance with sub-millisecond latency. 
+=>https://github.com/Java-Techie-jt/spring-data-redis/tree/main =>Redis as in memory db
+                                                      Redis for caching
+https://github.com/Java-Techie-jt/spring-data-redis-cache
+when  @GetMapping("/{id}")
+    @Cacheable(key = "#id",value = "product") added at the method of serive or controller layer, first search take the data from db but next it took it from cache,
+we find diff in time of response in the postman along with log of calling db is not there when we hit sencond timee.
+ @Cacheable(key = "#id",value = "product") //Id is the key of cache and value is the hash of cachedb.
+
+=>@GetMapping("/{id}")
+    @Cacheable(key = "#id",value = "product",unless = "#result.price>1000") //here product will be cache based on condition if price is less than 1000 only.
+=>When we are deleting the data from db, we will have remove that data from cache too, here we do so:-
+
+@DeleteMapping("/{id}")
+    @CacheEvict(key="#id",value = "product")// key and value would same as we using in cacheable. it will remove the data from cache.
+ @CachePut(value = "users", key = "#user.id")=> THis will update the the data to cache when we add new data to user.
