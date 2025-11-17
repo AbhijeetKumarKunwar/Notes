@@ -96,3 +96,16 @@ First check if docker is running in our system, cmd:- docker version
 =>Build docker image: ->docker build . -t easybyte/accounts:s4
 format:-docker build path -t(tag) userId/nameOfapp:tag(version)
 ->When we build it from cmd, first it will download the openjdk from dockerhub and try to make the image by copying our jar file and jdk to it.
+------------------------------------------------Running docker containere---------------
+docker run -p 8080:8080 ak608333319/accounts:s4 :--p(port fisrt port is for our local system, second port is for docker to expose at 8080 , since docker run on 
+isolated network, we can run same image on same port multiple at same time since, they are isolated so, every private network can run on same)
+docker run -d -p 8080:8080 ak608333319/accounts:s4 //-d means runnig in detach mode so, other cmd can be fired form cmd while one is running
+docker run -d -p 8081:8080 ak608333319/accounts:s4
+
+Above two containers are runnig same image but on diff port  , so we have scaled the our app to two pod here.
+We are using same port number for docker to expose for two diff pod is mained by docker call Port mapping .
+
+`````````````````````````````````````````````````````````Buildpacks--------------
+Buildpacks are a technology that automates the process of turning application source code into runnable container images, typically without the need for a Dockerfile.
+They achieve this by automatically detecting the programming language and framework of an application, installing necessary dependencies,
+and configuring the runtime environment.
