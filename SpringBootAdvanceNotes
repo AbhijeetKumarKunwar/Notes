@@ -62,3 +62,37 @@ we find diff in time of response in the postman along with log of calling db is 
 @DeleteMapping("/{id}")
     @CacheEvict(key="#id",value = "product")// key and value would same as we using in cacheable. it will remove the data from cache.
  @CachePut(value = "users", key = "#user.id")=> THis will update the the data to cache when we add new data to user.
+
+-----------------------------------------------------------------------Creating image of our application using docker-------------------------------------
+First we have to mention the packing of our application in pom.xml file at place where name and verion of applicaiton is mentioned.
+===>> <packaging>jar</packaging>
+=>Before we make code changes for docker, when we build the application, we will getting the jar craeted for our app, which will have all code and lib but not java runtime
+this is also called fat jar having big sizw e.g- accounts-0.0.1-SNAPSHOT.jar
+This is created with ref of name from pom:-
+<artifactId>accounts</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+=>mvn spring-boot:run ---->Runnnig from cmd.
+=>java -jar target/accounts-0.0.1-SNAPSHOT.jar ------------------->run spring boot using java
+--------------------------------------------------------Creating Docker file --------------------
+#Start with a base image containing Java runtime:tag like version of jdk image.Java is need for our application to run so, we are using java image which is there at dockerhub.
+FROM openjdk:21-jdk-slim
+
+# MAINTAINER instruction is deprecated in favor of using label
+# MAINTAINER eazybytes.com
+#Information around who maintains the image
+LABEL "org.opencontainers.image.authors"="eazybytes.com"
+
+# Add the application's jar to the image
+//here we are copying our jar file from target folder which is generated post build to image(which has java and now our applicaiton is there with)
+
+COPY target/accounts-0.0.1-SNAPSHOT.jar accounts-0.0.1-SNAPSHOT.jar
+
+# execute the application, this is the same cmd which we used to run our app using java cmd , there was space in bwn but here commona
+ENTRYPOINT ["java", "-jar", "accounts-0.0.1-SNAPSHOT.jar"]
+
+
+--------------------------------------------------------------------Running docke image-------------------------------------------
+First check if docker is running in our system, cmd:- docker version
+=>Build docker image: ->docker build . -t easybyte/accounts:s4
+format:-docker build path -t(tag) userId/nameOfapp:tag(version)
+->When we build it from cmd, first it will download the openjdk from dockerhub and try to make the image by copying our jar file and jdk to it.
