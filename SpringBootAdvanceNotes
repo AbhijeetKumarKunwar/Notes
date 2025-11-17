@@ -159,8 +159,8 @@ services:                                //this is the root level where list of 
     deploy:                              //here we gave limitation to our app which uses the resources of docker
       resources:
         limits:
-          memory: 700m                  //max 700 mb will be used by account services
-    networks:                            //a
+          memory: 700m                   //max 700 mb will be used by account services
+    networks:                            //as we know docker run in isolated network so, if our services need to communicated with each other we need to have common network
       - eazybank
   loans:
     image: "eazybytes/loans:s4"
@@ -184,6 +184,6 @@ services:                                //this is the root level where list of 
           memory: 700m
     networks:
       - eazybank
-networks:
+networks:                    //here we are defining the common network where all our apps will be running, network name is easybank and bridge will be used as driver to communicate
   eazybank:
     driver: "bridge"
