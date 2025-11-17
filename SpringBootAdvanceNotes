@@ -123,3 +123,22 @@ we will add the image tag to the plugin section of the pom file:-
 
 =>Run the build cmd which will scan the whole project and build the image using all dependencies and we do not have to write the insturction to include
 java veresion copy the  fat jar from tartet to our image etc.
+=>This is required to run the docker in background.
+=>mvn spring-boot:build-image  //Generating docker image form mvn.
+==>RUnning the new image generated:-
+docker images =>get the list of image
+=>docker run -d -p 8090:9090 eazybytes/loans:s4 =>run the image with its name.
+we will able to see image is running  on docker , we can hit the api from postman to validate too.
+
+-------------------------------------------------------------------------Pushing docker image to DockerHub-----------
+
+docker images
+docker image push docker.io/ak608333319/accounts:s4 
+
+//this will push the image like same we does in github, here we have already login from our account in docker desktop
+so, cread will be taken from there and our image will be pushed to hub without explicity asked for creds.
+
+we can see this in reps:-https://hub.docker.com/repository/docker/ak608333319/accounts/general
+
+Anyone want to use this they can pull it:-docker pull ak608333319/accounts:s4
+=>First delete the accounts container and image then we will try to pull the image from hub and run it.
