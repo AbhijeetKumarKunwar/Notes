@@ -109,3 +109,17 @@ We are using same port number for docker to expose for two diff pod is mained by
 Buildpacks are a technology that automates the process of turning application source code into runnable container images, typically without the need for a Dockerfile.
 They achieve this by automatically detecting the programming language and framework of an application, installing necessary dependencies,
 and configuring the runtime environment.
+
+we will add jar packing to the pom file:-
+<packaging>jar</packaging>
+
+we will add the image tag to the plugin section of the pom file:-
+
+                 <configuration>
+                    <image>
+                        <name>eazybytes/${project.artifactId}:s4</name>
+                    </image>
+                </configuration>
+
+=>Run the build cmd which will scan the whole project and build the image using all dependencies and we do not have to write the insturction to include
+java veresion copy the  fat jar from tartet to our image etc.
