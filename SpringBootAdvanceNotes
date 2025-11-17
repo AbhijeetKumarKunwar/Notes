@@ -138,7 +138,7 @@ docker image push docker.io/ak608333319/accounts:s4
 //this will push the image like same we does in github, here we have already login from our account in docker desktop
 so, cread will be taken from there and our image will be pushed to hub without explicity asked for creds.
 
-we can see this in reps:-https://hub.docker.com/repository/docker/ak608333319/accounts/general
+we can see this in reps:-https://hub.docker.com/repository/docker/ak608333319/accounts/general //same image can be used in pipeline to deployed in cloud.
 =>First delete the accounts container and image then we will try to pull the image from hub and run it.
 
 Anyone want to use this they can pull it:-docker pull ak608333319/accounts:s4
