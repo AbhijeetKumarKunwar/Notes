@@ -143,3 +143,47 @@ we can see this in reps:-https://hub.docker.com/repository/docker/ak608333319/ac
 
 Anyone want to use this they can pull it:-docker pull ak608333319/accounts:s4
 =>ocker run -d -p 8080:8080 ak608333319/accounts:s4 //running the image pulled from dockerhub
+                                                    ----docker compose--------
+Docker Compose is a tool for defining and running multi-container Docker applications. It simplifies the orchestration of multiple services that work together to form a
+complete application, such as a web server, a database, and a caching layer. 
+Docker Compose uses a single YAML file (typically compose.yml or docker-compose.yml) to define all the services, networks, and volumes required for your application.
+This centralizes the configuration and makes it easy to manage.
+sample file:-we will maintain the herarchie of yml
+
+services:                                //this is the root level where list of services will be mentioned 
+  accounts:                              //Microservice level infos
+    image: "eazybytes/accounts:s4"       //image of account serice
+    container_name: accounts-ms          //name of container else random will be assigned as we saw in desktop(docker)
+    ports:                               //port at which docker and our sevices will listen
+      - "8080:8080"
+    deploy:                              //here we gave limitation to our app which uses the resources of docker
+      resources:
+        limits:
+          memory: 700m                  //max 700 mb will be used by account services
+    networks:                            //a
+      - eazybank
+  loans:
+    image: "eazybytes/loans:s4"
+    container_name: loans-ms
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - eazybank
+  cards:
+    image: "eazybytes/cards:s4"
+    container_name: cards-ms
+    ports:
+      - "9000:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - eazybank
+networks:
+  eazybank:
+    driver: "bridge"
