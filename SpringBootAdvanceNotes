@@ -337,3 +337,6 @@ public record AccountsContactInfoDto(String message, Map<String, String> contact
 }
 @EnableConfigurationProperties(value = {AccountsContactInfoDto.class}) we need to add this to our application class.
 
+The @EnableConfigurationProperties annotation can be declared in two primary places:
+On the main application class (the class annotated with @SpringBootApplication).
+On a separate @Configuration class. 
