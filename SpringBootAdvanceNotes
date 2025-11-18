@@ -235,3 +235,65 @@ Docker Commands used in the course                       Docker Command	Descript
                                                                             DOcker extention
 Docker Extensions are add-ons that integrate third-party tools and functionalities directly into Docker Desktop, enhancing its capabilities. 
 They allow users to seamlessly connect their preferred development tools to their application development and deployment workflows. 
+ section 4 code:-https://github.com/eazybytes/microservices/tree/3.4.1/section4
+
+Cloud native application:-
+A cloud-native application is a software application designed and built specifically to run in a cloud environment, taking full advantage of its scalability,
+flexibility, and resilience. These applications are built using a microservices architecture, where functionality is broken down into small, independent services.
+Key technologies include containerization (like Docker and Kubernetes), CI/CD pipelines, and serverless functions. 
+cloud native app can be on gcp,aws,azure etc.
+Key characteristics
+
+Agile development: They support agile development practices, which allows for rapid deployment of new features and faster time-to-market. 
+Scalability and resilience
+Automation:ci/cd
+Containerization:docker or othe tool
+Microservices architecture:
+
+                                                =======12 factos and 15 factor Methodology============
+The "15-Factor Methodology" is a set of principles for developing modern, cloud-native applications, an extension of the original "Twelve-Factor App" methodology. 
+The 15 factors are:
+1.One Codebase, one Application : Each application has only one code base which will be independently deployeing using packing (build once) and run in multiple env
+we should have config of diff env externally injected during deployement, so, once its build will be running same in all env.Its easy to maintain and tack.
+
+2.API First: Applications should be designed with an API-first approach, defining service contracts upfront using a language like Open API Specification (Swagger).
+dictates that applications should be designed with their Application Programming Interfaces (APIs) as "first-class citizens" from the outset of the development process.
+This means the API contract and design are defined and agreed upon before writing any application code or building user interfaces. 
+
+3.Dependency Management: Explicitly declare and isolate dependencies using a dependency declaration manifest and an isolation tool.we use maven or gradle where we declr
+our dependencies which will be download and mangaed by it, we don't need to download explicitely.
+
+4.Design, Build, Release, Run: Strictly separate the build, release, and run stages to create an immutable build artifact at each release.All setsps shold be followed and 
+does not  make any changes at any stage , so make it immutable. 
+
+5.Config: Store configuration that varies between environments (staging, production, etc.) in environment variables or external configuration services, never in the code.
+
+6.Logs: Treat logs as event streams, directing them to standard output and leaving the aggregation and storage to external tools.so, we can see the logs of all the MS at single place.
+
+7.Disposability: Maximize robustness by designing processes that can be started or stopped at a moment's notice with fast startup and graceful shutdown.In the cloud native
+we have docker which make our application to light image which will be easy to deploye and stopped if needed , while stopping our aaplicatin should not take more req and 
+complete the ongoing req, in case of neeed it will upscale and downsacle autometically, if somthing went wrong it will be restart the app, these capablity is acheive by
+kubernative, so,
+
+8.Backing Services: Treat all backing services (databases, message brokers, caching systems, etc.), whether local or third-party, as attached resources accessed via a URL/credentials stored in the config.
+
+9.Environment Parity: Keep development, staging, and production environments as similar as possible to minimize gaps in time, people, and tools.
+
+10.Administrative Processes: Run admin/management tasks (database migrations, batch jobs, etc.) as one-off processes in an identical environment to the regular long-running app processes.
+Thease should be treated as isolated process and deplouyed in each env.we should deployed thease as seperate MS.
+
+11.Port Binding: Applications should be self-contained and expose their services via port binding, not relying on runtime injection of a web server.
+
+12.Stateless Processes: Execute the app as one or more stateless and share-nothing processes, storing any necessary persistent data in a stateful backing service.
+should not store any data in session or any where expect db,it won't have same instance in next req, so, all instance are isolated to each other.
+
+13.Concurrency: Scale out via the process model, designing applications to distribute workload across multiple processes.
+In java app JVM handle this multi threading by using thread from thread pool, by default we have 200 thread avail to serve the client.
+
+14.Telemetry: Design the application to include the collection of monitoring data, health information, and statistics (APM, domain-specific data, system logs).
+
+25.Authentication & Authorization: Implement robust security measures, especially for APIs, using solutions like OAuth2 or OpenID Connect to handle user authentication and authorization. 
+
+
+
+
