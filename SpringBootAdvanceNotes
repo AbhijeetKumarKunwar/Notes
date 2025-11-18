@@ -294,6 +294,46 @@ In java app JVM handle this multi threading by using thread from thread pool, by
 
 25.Authentication & Authorization: Implement robust security measures, especially for APIs, using solutions like OAuth2 or OpenID Connect to handle user authentication and authorization. 
 
+                                      ==========Configuration Management ============
+If we bind all code and config to the application, we need to build the image in every other env since, our config is hard binded to code, so this process would be not be
+good practice, so, config should be externally managed and once our code image is build can be used in all env , out config would be inject at the time of deployment
+it would be env wise so, we will be free from overhead of config.
 
+=>Spring boot let us externalise the configuration so, we can use the same code base in all env .
+=>Bydefault Spring boot look for config in application.properties, it has set of priority which will override the configs;-
+application .properties<os Env veriable<java system properties(System.getProperties())<JIndi components<Servelet init paramenters<servelet config parameters<command line arg.
 
+=>we can read the config injava using 
+1.@value , it will read one value at time
+@Value("${build.version}")
+    private String buildVersion;
+
+2.Environement interface->env.getProperties() one config at time, this is used to read the env veriable like secret,password;
+@Autowired
+private Environment environment;
+ @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("JAVA_HOME"));//this will return the path of our java insalled in system.
+    }
+
+3.@ConfigurationProperties("prefix")->we can define the pojo and it will read the all config with specified prefix to a pojo.
+
+confog from yml:-
+accounts:
+  message: "Welcome to EazyBank accounts related local APIs "
+  contactDetails:
+    name: "John Doe - Developer"
+    email: "john@eazybank.com"
+  onCallSupport:
+    - (555) 555-1234
+    - (555) 523-1345
+
+Reading into pojo of Record class:-
+@ConfigurationProperties(prefix = "accounts")
+public record AccountsContactInfoDto(String message, Map<String, String> contactDetails, List<String> onCallSupport) {
+//THe dto will be populated during starting of app.
+}
+@EnableConfigurationProperties(value = {AccountsContactInfoDto.class}) we need to add this to our application class.
 
