@@ -187,3 +187,13 @@ services:                                //this is the root level where list of 
 networks:                    //here we are defining the common network where all our apps will be running, network name is easybank and bridge will be used as driver to communicate
   eazybank:
     driver: "bridge"
+
+
+We can run the compose file with cmd so, all of the services image will start running together, we do not have to do it each and every service wise neither we
+have to create docker file for each service.
+
+CMD:->docker compose up -d {running in detach mode, it will download the all dependencies and start our image , we need to hit the cmd from the location where our compose file}
+      //created containers
+CMD->docker copose down -d {stopped and revmove the running image}, it will be removed we can check by doing docker ps.
+CMD->docker compose start (start the stopped containers only, not removed containers)
+CMD->docker compose stop (stop the the running container, if not running container it will give error message)
