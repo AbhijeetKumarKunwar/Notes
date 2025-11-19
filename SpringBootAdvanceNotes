@@ -417,4 +417,4 @@ server:
 
 
 ===>When we try to run the application, we can get the all the configuration using sample endpoint:-http://localhost:8071/accounts/prod
-account_pord.yml->file name present in config folder of classpath.
+accounts-prod.yml->file name present in config folder of classpath.
