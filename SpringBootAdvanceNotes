@@ -414,3 +414,7 @@ spring:
           search-locations: "classpath:/config"  //location where all configs are stored
 server:
   port: 8071
+
+
+===>When we try to run the application, we can get the all the configuration using sample endpoint:-http://localhost:8071/accounts/prod
+account_pord.yml->file name present in config folder of classpath.
