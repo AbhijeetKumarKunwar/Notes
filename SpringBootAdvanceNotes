@@ -340,7 +340,23 @@ public record AccountsContactInfoDto(String message, Map<String, String> contact
 The @EnableConfigurationProperties annotation can be declared in two primary places:
 On the main application class (the class annotated with @SpringBootApplication).
 On a separate @Configuration class. 
-                                                    ------Profiles-----
+How Does It Work?
+@ConfigurationProperties: This annotation defines a class where external configuration properties will be mapped. You can specify a prefix that matches the keys in your application.properties or application.yml file.
+@EnableConfigurationProperties: This annotation is applied to a Spring configuration class and specifies which configuration properties classes should be bound from external configuration sources.
+                                                   
+E.g-
+@ConfigurationProperties(prefix = "app")
+public class AppProperties {
+    private String name;
+    private String version;
+}
+
+@Configuration
+@EnableConfigurationProperties({AppProperties.class, DatabaseProperties.class})
+public class AppConfig {
+}
+
+------Profiles-----
 =>Spring provides a great tool for grouping configuration properties into so-called profiles(dev, qa, prod) allowing us to activate a bunch of configurations based on the active
 profile.
 =>The default profile is always active. Spring Boot loads all properties in application.properties into the default profile.We can create another profiles by creating property files like below,
@@ -418,3 +434,4 @@ server:
 
 ===>When we try to run the application, we can get the all the configuration using sample endpoint:-http://localhost:8071/accounts/prod
 accounts-prod.yml->file name present in config folder of classpath.
+
