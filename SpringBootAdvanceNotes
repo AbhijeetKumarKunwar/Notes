@@ -489,7 +489,22 @@ spring:
       server:
         git:  
           uri: "https://github.com/eazybytes/eazybytes-config.git"  //repo where configs are placed
+														=>We can read it from private git or other place, we can refer the offical doc for other way to read the configs.
           default-label: main   //branch
           timeout: 5   //timout till the time it try to load else give exception
           clone-on-start: true   //clone the config to local at startring of app
           force-pull: true //it will pull the config and override the old local configs
+-----------------------------------------------------------Encyption and decription -----------------------
+we only need to include one property in our .properties file and /encrypt and /decrypt api will be expose which will be post call, it will take the values in plane text
+body and return the asked result.
+
+curl --location 'http://localhost:8071/decrypt' \
+--header 'Content-Type: text/plain' \
+--data 'c8504324c65a2c6cb4318bef424c2cc5e788be38afbb39b7b59112cf58c290525780edfa761f801bcf7bb17ef4a2d61f'
+
+
+encrypt:
+  key: "45D81EC1EF61DF9AD8D3E5BB397F9"   //This can be any complext text
+
+while passing the values from propertie file we should pass (cipher) before the encrypted values of properties out server will understand it is encrypted and
+it will do the decryption.
