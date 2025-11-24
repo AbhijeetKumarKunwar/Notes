@@ -356,7 +356,7 @@ public class AppProperties {
 public class AppConfig {
 }
 
-------Profiles-----
+                                                                                  ------Profiles-----
 =>Spring provides a great tool for grouping configuration properties into so-called profiles(dev, qa, prod) allowing us to activate a bunch of configurations based on the active
 profile.
 =>The default profile is always active. Spring Boot loads all properties in application.properties into the default profile.We can create another profiles by creating property files like below,
@@ -434,4 +434,37 @@ server:
 
 ===>When we try to run the application, we can get the all the configuration using sample endpoint:-http://localhost:8071/accounts/prod
 accounts-prod.yml->file name present in config folder of classpath.
+=>With this name:-accounts.yml->http://localhost:8071/accounts/default , this will return default properties.
+=>Now our config server is rady to serve the config through endpoint.
 
+                          ---------------------Client application for Accounts service--------------
+=>yml file for client service :-
+server:
+  port: 8080
+spring:
+  application:
+    name: "accounts"   //name of the service will be used to req the config from the server.
+  profiles:
+    active: "prod"      //this will be used to load the profile of the config-name passed from clint to server
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+we need to add config dependencies:-
+<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+
+version:-<spring-cloud.version>2024.0.0</spring-cloud.version>
+sme need to add in dependencies management:-
+<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
