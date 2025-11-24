@@ -447,7 +447,9 @@ spring:
   profiles:
     active: "prod"      //this will be used to load the profile of the config-name passed from clint to server
   config:
-    import: "optional:configserver:http://localhost:8071/"
+    import: "optional:configserver:http://localhost:8071/"  //this wil load the config server which is running at port 8071, according to name and profile given here 
+														//properties will be loaded to our ms, optional is something which will be ignore and run our applicatin in case server conntion failed .
+
 
 we need to add config dependencies:-
 <dependency>
