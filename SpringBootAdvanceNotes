@@ -508,3 +508,16 @@ encrypt:
 
 while passing the values from propertie file we should pass (cipher) before the encrypted values of properties out server will understand it is encrypted and
 it will do the decryption.
+
+										-------------. Refresh configurations at runtime using refresh actuator path--------------
+we need to add refresh endpoint in .properties file so, every time if there is any change in the config, it will be call /refresh endpoint and load the updated config.{dependecny need to add in ms}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" //this is enabling all endpoint we can "/actuator" if want for this only. in all ms
+
+====>LIMITATION-for every new change we need to call refresh endpoint maually  but this will overhead the flow, we need to comeup with new solution:-
+
+						--- Refresh config at runtime using Spring Cloud Bus & Spring Cloud Config monitor---
