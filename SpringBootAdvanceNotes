@@ -436,6 +436,7 @@ server:
 accounts-prod.yml->file name present in config folder of classpath.
 =>With this name:-accounts.yml->http://localhost:8071/accounts/default , this will return default properties.
 =>Now our config server is rady to serve the config through endpoint.
+=>update the server file location to:-search-locations: "file:///Users//eazybytes//Documents//config"
 
                           ---------------------Client application for Accounts service--------------
 =>yml file for client service :-
@@ -476,3 +477,19 @@ sme need to add in dependencies management:-
 ->Here we are readiing the config from .properties file using 
 @EnableConfigurationProperties(value = {AccountsContactInfoDto.class})   //Main class level
 @ConfigurationProperties(prefix = "accounts")  //DTO class level.
+											---Reading config from Git---
+
+spring:
+  application:
+    name: "configserver"
+  profiles:
+     active: git    //to read the config from git
+  cloud:
+    config:
+      server:
+        git:  
+          uri: "https://github.com/eazybytes/eazybytes-config.git"  //repo where configs are placed
+          default-label: main   //branch
+          timeout: 5   //timout till the time it try to load else give exception
+          clone-on-start: true   //clone the config to local at startring of app
+          force-pull: true //it will pull the config and override the old local configs
