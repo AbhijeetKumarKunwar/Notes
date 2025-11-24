@@ -471,7 +471,7 @@ sme need to add in dependencies management:-
 		</dependencies>
 	</dependencyManagement>
 
-
+											------Reading configs from file system in config-server----------
 ==>when we will run accounts services, we will get the data from config server for prod:-http://localhost:8080/api/contact-info
 ->Here we are readiing the config from .properties file using 
 @EnableConfigurationProperties(value = {AccountsContactInfoDto.class})   //Main class level
