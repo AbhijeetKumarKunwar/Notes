@@ -613,11 +613,51 @@ networks:
 
 										----Service Discovery and Service registration----------
 These challenges in microservices can be solved using below concepts or solutions,
-1) Service discovery->Each instance of a microservice
+1) Service discovery->Each instance of a microservice(unique ip)
 exposes a remote API with it's own host and port. how do other microservices & clients know about these dynamic endpoint URLs to invoke them. So where is my servicе?
 
 2) Service registration=>If an microservice instance fails, new instances will be brought online to ensure constant availability. This means that the IP addresses of the
 instances can be constantly changing.So how does these new instances can start serving to the clients?
 
-3) Load balancing=>How do we make sure to properly load balance b/w the multiple microservice instances especially a microservice is invoking another microservice? How do a specific
+3) Load balancing=>How do we make sure to properly load balance b/w the multiple microservice instances(each has own ip} especially a microservice is invoking another microservice? How do a specific
 service information shared across the network?
+
+=>The biggest challenge with traditional load balancers is that some one has to manually maintain the routing tables which is an impossible task inside the microservices 
+network. Because containers/services are ephemeral in nature
+
+For cloud native applications, service discovery is the perfect solution. It involves tracking and storing information about allrunning service instances in a service 
+registry.Whenever a new instance is created, it should be registered in theregistry, and when it is terminated, it should be appropriately removed automatically.
+The registry acknowledges that multiple instances of the same application can be active simultaneously. When an application needs
+to communicate with a backing service, it performs a lookup in the registry to determine the IP address to connect to. If multiple
+instances are available, a load-balancing strategy is employed to evenly distribute the workload among them.
+Client-side service discovery and server-side service discovery are distinct approaches that address
+the service discovery problem in different contexts
+
+
+								-------------How it solve the problem---------
+In a modern microservice architecture, knowing the right network location of an application is a much
+more complex problem for the clients as service instances might have dynamically assigned IP addresses.
+Moreover the number instances may vary due to autoscaling and failures.
+Microservices service discovery & registration is a way for applications and microservices to locate each
+other on a network. This includes,
+A central server (or servers) that maintain a global view of addresses
+Microservices/clients that connect to the central server to register their address when they start & ready
+Microservices/clients need to send their heartbeats at regular intervals to central server about their health
+Microservices/clients that connect to the central server to deregister their address when they are about to shutdown
+
+
+Microservices service discovery & registration is a way for applications and microservices to locate each
+other on a network. This includes,
+A central server (or servers) that maintain a global view of addresses
+Microservices/clients that connect to the central server to register their address when they start & ready
+Microservices/clients need to send their heartbeats at regular intervals to central server about their health
+Microservices/clients that connect to the central server to deregister their address when they are about to shutdown
+
+								------------Client-side service discovery and load balancing bytes------
+In client-side service discovery, applications are responsible for registering themselves with a service registry during startup and unregistering
+when shutting down. When an application needs to communicate with a backing service, it queries the service registry for the associated IP
+address. If multiple instances of the service are available, the registry returns a list of IP addresses. The client application then selects one based
+on its own defined load-balancing strategy
+==>when we want to communitate with any upstream service, first our app will lookup the service-discouvery and get the list of ip address where upstream application instance
+are running, once we got the list of ip then our load balacning stretgy will decide the which ip to use for communication, here discovery of service and ip is own by
+client applicaiton, so, this is called client side serive discovery.
