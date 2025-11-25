@@ -664,3 +664,10 @@ client applicaiton, so, this is called client side serive discovery.
 
 =>In the client side when we do first query of ip addresses, it will caches the list of ip address so, it won't over burden our discovery server for every api call, it will
 get refesh in every few time to udpate the removed and added services to discouvery server, these all happens autometically using spring cloud.
+
+=>The major advantage of client-side service discovery is load balancing can be implemented
+using various algorithms, such as round-robin, weighted round-robin, least connections, or
+even custom algorithms. A drawback is that client service discovery assigns more
+responsibility to developers. Also, it results in one more service to deploy and maintain (the
+service registry). Server-side discovery solutions solve these issues. We are going to discuss
+the same when we are talking about Kubernetes
