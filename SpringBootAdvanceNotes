@@ -661,3 +661,6 @@ on its own defined load-balancing strategy
 ==>when we want to communitate with any upstream service, first our app will lookup the service-discouvery and get the list of ip address where upstream application instance
 are running, once we got the list of ip then our load balacning stretgy will decide the which ip to use for communication, here discovery of service and ip is own by
 client applicaiton, so, this is called client side serive discovery.
+
+=>In the client side when we do first query of ip addresses, it will caches the list of ip address so, it won't over burden our discovery server for every api call, it will
+get refesh in every few time to udpate the removed and added services to discouvery server, these all happens autometically using spring cloud.
