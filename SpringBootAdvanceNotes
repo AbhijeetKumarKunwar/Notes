@@ -793,3 +793,7 @@ info:
     name: "accounts"
     description: "Eazy Bank Accounts Application"
     version: "1.0.0"
+->our service details will be available on dahboard and if we client on it this will be called:-http://172.23.176.1:8080/actuator/info
+
+we can see actuator info endpint is being called which we have enabled and ip address is being used since, we have enabled and info details are shown which we have
+defined in properties file.
