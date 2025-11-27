@@ -744,3 +744,4 @@ management:
         enabled: true
 
 we can start our service and we will get the server Dashboard where we can see all the services :-
+check dashboard:-http://localhost:8070/
