@@ -750,6 +750,7 @@ Dependencies:-spring-cloud-starter-netflix-eureka-client
 when we connect with server, our client service will register it self with server and send the heartbeat in every 30 sec default.we can see the details of client service
 on the Server dashboard.
 @EnableFeignClients:-In main method to enabled our service as client.
+
  Properties file:-
 
 server:
@@ -759,19 +760,6 @@ spring:
     name: "accounts"
   profiles:
     active: "prod"
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
-  h2:
-    console:
-      enabled: true
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
   config:
     import: "optional:configserver:http://localhost:8071/"
 
@@ -780,21 +768,25 @@ management:
     web:
       exposure:
         include: "*"
-  endpoint:
+  endpoint:						//acutuator endpoint to shutdown post deregistering
     shutdown:
-      access: unrestricted
-  info:
+      enabled: true
+  info:							//info level endpoint enabled to expose the info from this file
     env:
+      enabled: true
+
+endpoint:						//on root level, to call the shutdown endpoint
+    shutdown:
       enabled: true
 
 eureka:
   instance:
-    preferIpAddress: true
+    preferIpAddress: true		//service will use this service ip to communitcate
   client:
-    fetchRegistry: true
-    registerWithEureka: true
+    fetchRegistry: true         //registrying as client
+    registerWithEureka: true   //
     serviceUrl:
-      defaultZone: http://localhost:8070/eureka/
+      defaultZone: http://localhost:8070/eureka/   //Url where our service will get register
 
 info:
   app:
