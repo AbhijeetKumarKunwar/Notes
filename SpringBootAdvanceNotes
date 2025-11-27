@@ -745,3 +745,59 @@ management:
 
 we can start our service and we will get the server Dashboard where we can see all the services :-
 check dashboard:-http://localhost:8070/
+										---Client MS to register with EUREKA server--
+Dependencies:-spring-cloud-starter-netflix-eureka-client
+when we connect with server, our client service will register it self with server and send the heartbeat in every 30 sec default.we can see the details of client service
+on the Server dashboard.
+@EnableFeignClients:-In main method to enabled our service as client.
+ Properties file:-
+
+server:
+  port: 8080
+spring:
+  application:
+    name: "accounts"
+  profiles:
+    active: "prod"
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "accounts"
+    description: "Eazy Bank Accounts Application"
+    version: "1.0.0"
