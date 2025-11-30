@@ -800,10 +800,13 @@ defined in properties file.
 ->Eureka expose its endpoint which share all the information of clients e.g:-
 http://localhost:8070/eureka/app->This will share all the info of server registered apps
 http://localhost:8070/eureka/apps/LOANS->This will give the all the infos related to LOANS api only, we can pass Accept->application/json in header , we will get the
-info in json format. apps/service-name .
+info in json format. apps/service-name . 
 
 								---------------------------Dregister from server------------------
 we have already given the shutdown endpoint expose through the actuator, which will make the post call and stop the applicaiton , so, it will de resiter then shoutdown
 and this will removed our app from discovery server.
 ->Heart beat is send by our applicaiton to discovery server in every 30 sec using put call, if we stop the discovery server, we can see erro in ms so, they are not able
 to send the heart beat.
+
+									======== Feign Client code changes to invoke other microservices==========
+when we use RestTemplate and webclient we used url,reqpayload,port etc but in caes of openFeign client we write declerative code , no need to write all implemenatation code here.
