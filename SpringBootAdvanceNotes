@@ -810,3 +810,14 @@ to send the heart beat.
 
 									======== Feign Client code changes to invoke other microservices==========
 when we use RestTemplate and webclient we used url,reqpayload,port etc but in caes of openFeign client we write declerative code , no need to write all implemenatation code here.
+
+THis is need to declear in the client service to call the any services using feign client:-
+
+@FeignClient("cards") //on interface level and name should same which is being used by card service to register with discovery server
+public interface CardsFeignClient {
+
+    @GetMapping(value = "/api/fetch",consumes = "application/json")                  // same method signature which method neeed to invoke from card  controller,only declearation will be used to call,
+    public ResponseEntity<CardsDto> fetchCardDetails(@RequestParam String mobileNumber);  //rest impl will be taken care of feign client.
+
+
+}
