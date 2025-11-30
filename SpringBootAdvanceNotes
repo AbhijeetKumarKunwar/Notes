@@ -826,3 +826,43 @@ ResponseEntity<CardsDto> cardsDtoResponseEntity = cardsFeignClient.fetchCardDeta
 service call impl too. we will get the deteails like rest api call.
 
 All things r taken care by Eureka server and feign client , developer need not to worry about the implementation.
+
+							------------Eureka Self-Preservation mode to avoid network trap issues-----
+
+when client services does not send the heart beat to the server , discovery server will remove that instance form registry but it will follow one threshold like if 
+particular number of heart beat is not being recive for no of instances register , then in that case it will not remove the instanec, instied it will go to serlf-preservation
+mode so, it will keep the instance even not getting the heart beat , this it does by assuming there would be some network or internet issue, this will keep the instance live.
+server will start gettng the heart beat once, its fixed the issue, we can controll these using configuration.
+
+->We can create docker image of all the MS and push to the dockerhub and same can be used by running the image from cmd and test the apis.
+
+													----ROUTING, CROSS CUTTING CONCERNS IN MICROSERVICES-----------
+HOW DO WE MAINTAIN A SINGLE ENTRYPOINT INTO MICROSERVICES NETWORK=> all client do not have keep the details for each services.
+HOW DO WE HANDLE CROSS CUTTING CONCERNS?==>logs,audit,trace, security acrross all the microservices (same code can't be put for each services as libaraby, it will incr the coupling)
+HOW DO WE ROUTE BASED ON USTOM REQUIREMENTS ==>difining routing rule based on header,reqParm inside the microservice netwok.
+==
+In a scenario where multiple clients directly
+connect with various services, several
+challenges arise. For instance, clients must
+be aware of the URLs of all the services, and
+enforcing common requirements such as
+security, auditing, logging, and routing
+becomes a repetitive task across all services.
+To address these challenges, it becomes
+necessary to establish a single gateway as
+the entry point to the microservices
+network.
+==
+solution is edge server(API GATEWAY)----------------------------------------------------
+The list of feature provided by API GATE WAY:-
+Req validation
+Include and exclude ips (blocked)
+auth
+Rate limiting
+Dynamic routing
+service discovery
+modifying req
+protocol conversion.
+
+													==========Spring Cloud Gateway================
+
