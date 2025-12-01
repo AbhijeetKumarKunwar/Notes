@@ -906,7 +906,7 @@ spring:
 // This property is a flag that enables or disables the automatic creation of routes based on services registered with a DiscoveryClient.it it is false enabled:false
 the Spring Cloud Gateway will not automatically generate routes for every service found in the service registry. You will have to define all your routes manually in
 your configuration file or via Java code using a RouteLocator. 
-
+=>To use Spring Cloud Gateway without a discovery server, you need to configure the routes statically, either in your application's properties file or using Java configuration. 
 ->we will start the service in the seq like config-server->eureka server->card,loand,account services->gateway service
 ->when we seee on the eureka server all servives will be registered, 
 ->http://localhost:8072/actuator (to see the actuator endpoint of gateway serviec) we will see the actuator gateway service is exposed:-
@@ -935,3 +935,26 @@ curl --location 'http://localhost:8072/ACCOUNTS/api/create' \     //8072->gatewa
 "mobileNumber": "98099998789",
 "email": "ak980888@gmail.com"
 }'
+
+													---Define custom routes----
+@Bean   //inside the main class
+	public RouteLocator eazyBankRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
+		return routeLocatorBuilder.routes()             //route builder will be used to create thebean of the route and it will mark the service as custom routes   
+						.route(p -> p
+								.path("/eazybank/accounts/**")    //its liek matcher
+								.filters( f -> f.rewritePath("/eazybank/accounts/(?<segment>.*)","/${segment}") //rewriitng the path to veriable segment
+										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))  //adding the Response header 
+								.uri("lb://ACCOUNTS"))  //aading the spring cloud load balancer using service discovery app name;
+					.route(p -> p
+							.path("/eazybank/loans/**")
+							.filters( f -> f.rewritePath("/eazybank/loans/(?<segment>.*)","/${segment}")
+									.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+							.uri("lb://LOANS"))
+					.route(p -> p
+							.path("/eazybank/cards/**")
+							.filters( f -> f.rewritePath("/eazybank/cards/(?<segment>.*)","/${segment}")
+									.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+							.uri("lb://CARDS")).build();
+
+
+	}
