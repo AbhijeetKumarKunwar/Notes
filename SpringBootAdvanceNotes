@@ -941,9 +941,9 @@ curl --location 'http://localhost:8072/ACCOUNTS/api/create' \     //8072->gatewa
 	public RouteLocator eazyBankRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		return routeLocatorBuilder.routes()             //route builder will be used to create thebean of the route and it will mark the service as custom routes   
 						.route(p -> p
-								.path("/eazybank/accounts/**")    //its liek matcher
-								.filters( f -> f.rewritePath("/eazybank/accounts/(?<segment>.*)","/${segment}") //rewriitng the path to veriable segment
-										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))  //adding the Response header 
+								.path("/eazybank/accounts/**")    //Predicate , if it matches then it will move ahead.
+								.filters( f -> f.rewritePath("/eazybank/accounts/(?<segment>.*)","/${segment}") //rewriitng the path to veriable segment using filter
+										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))  // filter for adding the Response header 
 								.uri("lb://ACCOUNTS"))  //aading the spring cloud load balancer using service discovery app name;
 					.route(p -> p
 							.path("/eazybank/loans/**")
