@@ -854,15 +854,56 @@ the entry point to the microservices
 network.
 ==
 solution is edge server(API GATEWAY)----------------------------------------------------
-The list of feature provided by API GATE WAY:-
-Req validation
-Include and exclude ips (blocked)
-auth
-Rate limiting
-Dynamic routing
-service discovery
-modifying req
-protocol conversion.
+
+Spring Cloud Gateway features:
+
+Built on Spring Framework and Spring Boot
+Compatible with both Spring WebFlux and Spring Web MVC
+Able to match routes on any request attribute.
+Predicates and filters are specific to routes.
+Spring Cloud Circuit Breaker integration.
+Spring Cloud DiscoveryClient integration
+Easy to write Predicates and Filters
+Request Rate Limiting
+Path Rewriting
+
 
 													==========Spring Cloud Gateway================
+The service gateway sits between all calls from the client to the individual services & acts as a central Policy Enforcement Point (PEP) like below, 
+Routing (Both Static & Dynamic) ,Security (Authentication & Authorization) Logging, Auditing and Metrics collection protocol conversion.
+
+													=========Spring Cloud Gateway internal architecture======
+when req com from client it will land to =>Gateway Handler (Mapping using Routing config, it will have req mappin so, will decidie which endpint to hit)
+=>Predicates (To check if the requests fulfill a set of given condition)==> Pre Filters( set of filter which is used to  to execute logic on a request before it is routed to a backend service)
+=>then re will go to MS and post that we will have=>POST FILTER ->GATWWAY HANDLER->Response to Client.
+
+												=============== Building Edge Server using Spring Cloud Gateway=========
+														https://github.com/eazybytes/microservices/tree/3.4.1/section8
+Dependencies:-Gateway,Eureka DIscovery client(to get the all services endpoint details from discovery server),config client,Actuator.
+Properties file:-
+
+server:
+  port: 8072
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: "http://localhost:8070/eureka/"
+spring:
+  application:
+    name: "gatewayserver"
+  config:
+    import: "optional:configserver:http://localhost:8071/"  //to get the details of configs service properties
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lowerCaseServiceId: true
+// This property is a flag that enables or disables the automatic creation of routes based on services registered with a DiscoveryClient.it it is false enabled:false
+the Spring Cloud Gateway will not automatically generate routes for every service found in the service registry. You will have to define all your routes manually in
+your configuration file or via Java code using a RouteLocator. 
 
