@@ -907,3 +907,31 @@ spring:
 the Spring Cloud Gateway will not automatically generate routes for every service found in the service registry. You will have to define all your routes manually in
 your configuration file or via Java code using a RouteLocator. 
 
+->we will start the service in the seq like config-server->eureka server->card,loand,account services->gateway service
+->when we seee on the eureka server all servives will be registered, 
+->http://localhost:8072/actuator (to see the actuator endpoint of gateway serviec) we will see the actuator gateway service is exposed:-
+->"gateway": {
+      "href": "http://localhost:8072/actuator/gateway",
+      "templated": false
+    }
+=>http://localhost:8072/actuator/gateway/routes   //this endpoint will give us all the routing details of serviecs from actuator gateway endpoint.
+e.g-
+{
+    "predicate": "Paths: [/eazybank/accounts/**], match trailing slash: true",
+    "route_id": "16c16fd1-e9bc-4aea-a1d0-be418901d58f",
+    "filters": [
+      "[[RewritePath /eazybank/accounts/(?\u003Csegment\u003E.*) = '/${segment}'], order = 0]",  //here our path is being rewrite, any req with  /eazybank/accounts/ will be route to the resouce path only .
+      "[[AddResponseHeader X-Response-Time = '2025-12-01T09:02:01.014064800'], order = 0]"
+    ],
+    "uri": "lb://ACCOUNTS",  //this will leverage the service discovery service named with ACCOUNTS and route the req using spring boot loadbalancer
+    "order": 0
+  }
+
+==>we can call out accounts apis using gateway service:-
+
+curl --location 'http://localhost:8072/ACCOUNTS/api/create' \     //8072->gateway port,ACCOUNTS ->name of the service registered to discovery server and lb of cloud service uses to call the service
+--header 'Content-Type: application/json' \
+--data-raw '{"name": "Abhijeet",
+"mobileNumber": "98099998789",
+"email": "ak980888@gmail.com"
+}'
