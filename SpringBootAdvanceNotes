@@ -958,3 +958,63 @@ curl --location 'http://localhost:8072/ACCOUNTS/api/create' \     //8072->gatewa
 
 
 	}
+							--------Implementing Cross cutting concerns Tracing & Logging using Gateway -----
+we can write multiple filter to address cross cutting concerns like adding correlationid , logs etc, when we will have multiple filter we can add the priority by adding
+@Order(1) annotation on the filter class.
+Our custom filter will implement the GlobalFilter from gateway library and override the filter method
+
+e.g-- adding correleation id to the requestFilter in case its not there.
+@Order(1)
+@Component
+public class RequestTraceFilter implements GlobalFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestTraceFilter.class);
+
+    @Autowired
+    FilterUtility filterUtility;
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
+        if (isCorrelationIdPresent(requestHeaders)) {
+            logger.debug("eazyBank-correlation-id found in RequestTraceFilter : {}",
+                    filterUtility.getCorrelationId(requestHeaders));
+        } else {
+            String correlationID = generateCorrelationId();
+            exchange = filterUtility.setCorrelationId(exchange, correlationID);
+            logger.debug("eazyBank-correlation-id generated in RequestTraceFilter : {}", correlationID);
+        }
+        return chain.filter(exchange);
+    }
+=>we can add the correlation id to other services as requestHeader so, those can be used in all dependent service to main the logging pattern for debuging, we can enabled 
+the logs using this config:-
+logging:
+  level:
+    com:    //pakcage
+      eazybytes: //subpakage
+        accounts: DEBUG //subpakage
+
+@RequestHeader("eazybank-correlation-id") String correlationId->This will be used in controller to pass this id to other services.
+                                                                       
+==>SImilerly we can add the response filter and the correlationid to the responseheader to get it ack at UI.
+=>Here we can create the Global filter bean direclty using @bean not req to implements and overrid filter method(second way)
+@Configuration
+public class ResponseTraceFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResponseTraceFilter.class);
+
+    @Autowired
+    FilterUtility filterUtility;
+
+    @Bean
+    public GlobalFilter postGlobalFilter() {
+        return (exchange, chain) -> {
+            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+                HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
+                String correlationId = filterUtility.getCorrelationId(requestHeaders);
+                logger.debug("Updated the correlation id to the outbound headers: {}", correlationId);
+                exchange.getResponse().getHeaders().add(filterUtility.CORRELATION_ID, correlationId);
+            }));
+        };
+    }
+}
