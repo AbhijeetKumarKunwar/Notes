@@ -1047,7 +1047,32 @@ to retrieve or process data from multiple backend microservices. Instead of havi
 microservices, the API Gateway consolidates the requests into a single response.(all applicable api will be called and combine the response and send it client, from
 client side single api will be called).
 
+														-----------RESILIENCY IN MICROSERVICES----------
+HOW DO WE AVOID CASCADING FAILURES?
+HOW DO WE HANDLE FAILURES GRACEFULLY WITH FALLBACKS?
+HOW TO MAKE OUR SERVICES SELFHEALING CAPABLE
 
+Solution:-									-----RESILIENCY USING RESILIENCE4J-----------
 
+Resilience4j is a lightweight fault tolerance library designed for functional programming. It offers the following patterns for
+increasing fault tolerance due to network problems or failure of any of the multiple services:
+Circuit breaker - Used to stop making requests when a service invoked is
+failing
 
+Fallback - Alternative paths to failing requests
+Retry - Used to make retries when a service has temporarily failed
+Rate limit - Limits the number of calls that a service receives in a time
+Bulkhead - Limits the number of outgoing concurrent requests to a service to avoid
 
+Use case:-When a microservice responds slowly or fails to function, it can lead to the depletion of resource threads on the Edge server and intermediate services.
+This, in turn, has a negative impact on the overall performance of the microservice network overloading.
+
+												----CIRCUIT BREAKER PATTERN------
+CIRCUIT BREAKER PATTERN
+In Resilience4j, the circuit breaker is implemented via three states
+
+CLOSED - Initially the circuit breaker starts with closed status and accepts client requests
+OPEN - If Circuit breaker sees threshold requests are failing, then it will OPEN the circuit which will make requests fail fast and route to fallback method.
+HALF_OPEN - Periodically Circuit breaker checks if the issue is resolved by allowing few requests. 
+Based on the results it will either go to CLOSED or OPEN, we set threshold value for pass percentage, if it meets then circut will
+be closed.
