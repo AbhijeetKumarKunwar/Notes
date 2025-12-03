@@ -1018,3 +1018,36 @@ public class ResponseTraceFilter {
         };
     }
 }
+
+
+																	-----------API Gateway Pattern--------------
+The API Gateway Pattern is a critical architectural component in microservices design, offering a unified entry point for multiple
+microservices. It acts as a gateway between the external clients (e.g, web apps, mobile apps) and the internal microservices, helping
+streamline communication, security, and routing. This pattern is essential when managing the complexities of microservice-based
+applications.
+
+														-------Gateway Routing pattern----------
+The Gateway Routing pattern is a design pattern used in microservices architectures where an API Gateway routes incoming client
+requests to the appropriate backend microservices based on various factors like the URL, headers, or request parameters.
+
+															-------Gateway offloading Pattern-------
+The Gateway Offloading Pattern is an architectural pattern used in microservices to offload certain cross-cutting concerns-such
+as security, caching, rate limiting, and monitoring-from individual microservices to the API Gateway. This pattern helps centralize
+and simplify the implementation of these concerns, allowing the microservices to focus solely on business logic.
+
+																----Backend for Frontend (BFF) Pattern---------
+The Backend for Frontend (BFF) Pattern is a design pattern used in microservices architectures where a separate backend service
+is created for each client type (e.g., web, mobile, tablet). Each frontend (client) has its own specialized backend to optimize
+communication between the frontend and the microservices, providing a tailored experience for different clients. THese are generlaly req like in case of web we need 
+more data to display but in case of mobile we need compresss data and so, out device can run s/w easily i.e reasons we have seprate Gateway service is there for each cleint.
+
+												-----------Gateway Aggregator/Composition pattern eazy bytes----------
+In microservices architecture, a Gateway Aggregator or Gateway Composition pattern is used when a request from a client needs
+to retrieve or process data from multiple backend microservices. Instead of having the client make multiple calls to various
+microservices, the API Gateway consolidates the requests into a single response.(all applicable api will be called and combine the response and send it client, from
+client side single api will be called).
+
+
+
+
+
