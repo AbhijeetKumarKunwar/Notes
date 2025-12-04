@@ -1071,6 +1071,8 @@ This, in turn, has a negative impact on the overall performance of the microserv
 CIRCUIT BREAKER PATTERN
 In Resilience4j, the circuit breaker is implemented via three states
 
+This can be implmented at gateway level as well as Service layer of MS,on service leayer it work for single ms api.
+
 CLOSED - Initially the circuit breaker starts with closed status and accepts client requests
 OPEN - If Circuit breaker sees threshold requests are failing, then it will OPEN the circuit which will make requests fail fast and route to fallback method.
 HALF_OPEN - Periodically Circuit breaker checks if the issue is resolved by allowing few requests. 
