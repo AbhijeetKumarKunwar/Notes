@@ -1078,3 +1078,28 @@ OPEN - If Circuit breaker sees threshold requests are failing, then it will OPEN
 HALF_OPEN - Periodically Circuit breaker checks if the issue is resolved by allowing few requests. 
 Based on the results it will either go to CLOSED or OPEN, we set threshold value for pass percentage, if it meets then circut will
 be closed.
+s
+												----Circuit Breaker at gateway service---
+
+Dependencies:-
+spring-cloud-starter-circuitbreaker-reactor-resilience4j
+
+we will add the circuit breaker filter where we have defined the cutom route:-
+
+return routeLocatorBuilder.routes()
+						.route(p -> p
+								.path("/eazybank/accounts/**")
+								.filters( f -> f.rewritePath("/eazybank/accounts/(?<segment>.*)","/${segment}")
+										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())   //till here same code of routes.
+										.circuitBreaker(config -> config.setName("accountsCircuitBreaker")  //Enabling circuit breaker filter
+												.setFallbackUri("forward:/contactSupport"))) //fallback method
+								.uri("lb://ACCOUNTS"))
+
+YML configuration to tune circuit breaker:-
+resilience4j.circuitbreaker:
+  configs:
+    default:						//this is default config , applicable to all services
+      slidingWindowSize: 10			//This circuit will be applied by observing 10 req.
+      permittedNumberOfCallsInHalfOpenState: 2 	//two req will be observed for coming to hallf open state
+      failureRateThreshold: 50					//decision will taken on this percentage passing
+      waitDurationInOpenState: 10000			//cooling/healing time 
