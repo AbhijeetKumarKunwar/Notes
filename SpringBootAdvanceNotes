@@ -1103,3 +1103,13 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 2 	//two req will be observed for coming to hallf open state
       failureRateThreshold: 50					//decision will taken on this percentage passing
       waitDurationInOpenState: 10000			//cooling/healing time 
+
+=>TO domenstrate this pattern, we can hit the actuator circuitbraker endpoint , which will give us overall status of our circuit, if we hit the circuit breakerevent enpoint
+which we call by the name of circuitbreaker it will give us list of all api call and its status, when we overwhelm the api with threshold values, we can see the 
+status of the circuit changes and after cooling time it will make it half open and if succesful , it will go the close state.
+
+FallBack method:-THis is the method call to give the signal to end user about the status of the circuit.insteied of error, we will get the customize error message.
+
+=>circuit breaker fallback methods return Mono or Flux to maintain the non-blocking, asynchronous nature of the application's data flow. 
+=>By returning a Mono or Flux, the fallback mechanism immediately provides an alternative data signal (e.g., an empty Mono, a default value wrapped in a Mono.just(),
+or an error signal) without blocking the calling thread
