@@ -1169,3 +1169,12 @@ public StudentCourseDetailsResponse fallbackMethod(Long id, Throwable throwable)
    StudentCourseDetailsResponse studentCourseDetailsResponse=new StudentCourseDetailsResponse();
    return studentCourseDetailsResponse;
 }
+
+											----------Http timeout configurations---------
+When we implement CB , bydefault we get this implementation, but in we need to implement this on gateway server to make it applicable
+for all the microservices, since if it wait more than deginated time, it will return the gateway timeout issue, with message
+taking more than expected time.
+  cloud:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 2s
