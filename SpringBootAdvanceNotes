@@ -812,6 +812,8 @@ to send the heart beat.
 when we use RestTemplate and webclient we used url,reqpayload,port etc but in caes of openFeign client we write declerative code , no need to write all implemenatation code here.
 
 THis is need to declear in the client service to call the any services using feign client:-
+Feign Client is a declarative REST client used in Spring Cloud microservices, which minimizes boilerplate code through interface definitions, while RestTemplate is an imperative, 
+general-purpose HTTP client that provides granular control over the request and response process.
 
 @FeignClient("cards") //on interface level and name should same which is being used by card service to register with discovery server
 public interface CardsFeignClient {
@@ -1113,3 +1115,57 @@ FallBack method:-THis is the method call to give the signal to end user about th
 =>circuit breaker fallback methods return Mono or Flux to maintain the non-blocking, asynchronous nature of the application's data flow. 
 =>By returning a Mono or Flux, the fallback mechanism immediately provides an alternative data signal (e.g., an empty Mono, a default value wrapped in a Mono.just(),
 or an error signal) without blocking the calling thread
+
+									---------Implementing Circuit Breaker pattern with Feign----------
+We can use the circuit breaker pattern on feign client where we are doing interservices communication using declering way, we need to enabled its config in .properties file
+and update the @FeignClient annoation with fallback **class with same method signature**".
+Add maven dependency: Add spring-cloud-starter-circuitbreaker-resilience4j maven dependency inside pom.xml
+->here we have decler the fallback method, which will be called in case of cascading falure
+
+@FeignClient(name="loans",fallback = LoansFallback.class)
+public interface LoansFeignClient {
+
+    @GetMapping(value = "/api/fetch",consumes = "application/json")
+    public ResponseEntity<LoansDto> fetchLoanDetails(@RequestHeader("eazybank-correlation-id")
+                                                         String correlationId, @RequestParam String mobileNumber);
+}
+@Component
+public class LoansFallback implements LoansFeignClient{//THis class featchLoanDeatils will be called in case of circuit open.
+    @Override
+    public ResponseEntity<LoansDto> fetchLoanDetails(String correlationId, String mobileNumber) {
+        return null;
+    }
+}
+
+------------------------------------------------------.properties changes for enabling feign client circuit breaker-----------------------
+spring:
+cloud:
+openfeign:
+circuitbreaker:
+enabled: true
+
+resilience4j.circuitbreaker:    //fine tune CB configs
+configs:
+default:
+slidingWindowSize: 5
+failureRateThreshold: 50
+waitDurationInOpenState: 10000
+permittedNumberOfCallsInHalfOpenState: 2
+
+												-----Circuit breaker for any method level impl-------
+Apply the circuit breaker to a method in your service layer using the @CircuitBreaker annotation: rest config will be same for .properties
+
+@CircuitBreaker(name = "course", fallbackMethod = "fallbackMethod") //here we have fallbackMethod not only fallback 
+public StudentCourseDetailsResponse getStudentWithTheirCourseDetail(Long id) {
+   StudentCourseDetailsResponse studentCourseDetailsResponse=new StudentCourseDetailsResponse();
+   Course course = courseServiceFeignClient.getCourseDetails(id);
+   Student student=studentRepo.findById(id).orElseThrow(null);
+   studentCourseDetailsResponse.setCourse(course);
+   studentCourseDetailsResponse.setStudent(student);
+   return studentCourseDetailsResponse;
+}
+
+public StudentCourseDetailsResponse fallbackMethod(Long id, Throwable throwable) {
+   StudentCourseDetailsResponse studentCourseDetailsResponse=new StudentCourseDetailsResponse();
+   return studentCourseDetailsResponse;
+}
