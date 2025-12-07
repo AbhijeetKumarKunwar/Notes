@@ -1322,4 +1322,31 @@ filters:
                 key-resolver: '#clientIpAddressResolver'
 
 
+											-------------Rate limitor In micoservices=----------
+NO Reddis container run is needed here
 
+@RateLimiter(name= "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("JAVA_HOME"));
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Java 21");
+    }
+
+
+resilience4j.ratelimiter:
+  configs:
+    default:
+      timeoutDuration: 1000  //thread will wait for this time and if it does not get access to the api by ratelimitor, it will go to fallback or return with eror
+      limitRefreshPeriod: 5000 //quota will be updated
+      limitForPeriod: 1  //onely one req will be allowed.
+
+timeoutDuration	The maximum time a calling thread will block waiting for permission when the rate limit is exceeded.	1000ms (1 second)
+limitRefreshPeriod	The time interval after which the permission count (limitForPeriod) is reset or replenished.	5000ms (5 seconds)
+limitForPeriod	The number of permissions (requests) allowed during each limitRefreshPeriod.
