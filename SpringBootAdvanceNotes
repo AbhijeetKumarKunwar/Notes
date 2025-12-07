@@ -1248,3 +1248,24 @@ resilience4j.retry:
 
 
 =>NOTE:-Retrying in microservices will call 3 times including user req.
+
+																		----RATE LIMITTER PATTERN------------
+The Rate Limiter pattern in microservices is a design pattern that helps control and limit the rate of incoming requests to a service
+or API. It is used to prevent abuse, protect system resources, and ensure fair usage of the service.
+In a microservices architecture, multiple services may depend on each other and make requests to
+communicate. However, unrestricted and uncontrolled requests can lead to performance degradation,
+resource exhaustion, and potential denial-of-service (DoS) attacks. The Rate Limiter pattern provides a
+mechanism to enforce limits on the rate of incoming requests.
+Implementing the Rate Limiter pattern helps protect microservices from being overwhelmed by
+excessive or malicious requests. It ensures the stability, performance, and availability of the system
+while providing controlled access to resources. By enforcing rate limits, the Rate Limiter pattern
+helps maintain a fair and reliable environment for both the service provider and its consumers.
+When a user surpasses the permitted number of requests within a designated time frame, any
+additional requests are declined with an HTТР 429 - Тoo Many Requests status. The specific limit is
+enforced based on a chosen strategy, such as limiting requests per session, IP address, user, or tenant.
+The primary objective is to maintain system availability for all users, especially during challenging
+circumstances. This exemplifies the essence of resilience. Additionally, the Rate Limiter pattern proves
+beneficial for providing services to users based on their subscription tiers. For instance, distinct rate
+limits can be defined for basic, premium, and enterprise users
+
+													=>Implementing Redis RateLimiter in Gateway Server=>
