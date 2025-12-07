@@ -1214,3 +1214,37 @@ return builder.routes ()
 }
 =>here retry we set the no of retries it will try, type of method for which this will be applicable is only GET.
 =>BackOff->Min duration, Max Duration,Multiple factor(2) for next susbsequent retry, ture-to enable this multiple factor.
+=>when we set retrying config as 3 for cloud gateway retry, it will call that method 4 time, one user req and 3 are retry.
+
+										-------Retrying in Microservices--------------
+@Retry(name = "getBuildInfo",fallbackMethod = "getBuildInfoFallback") //THis annotation isused impl retry , fallback method should have same signature of main method
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        logger.debug("getBuildInfo() method Invoked");
+        return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(buildVersion);
+    }
+
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {//throwable will additional parameter of fallback method
+        logger.debug("getBuildInfoFallback() method Invoked");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.9");
+    }
+
+config for this:-
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3
+      waitDuration: 500
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      ignoreExceptions:  ///THis list of exception will be ignored for retrying, it will direclty invoke the fallback method 
+        - java.lang.NullPointerException
+      retryExceptions:  ///THis will dictate to call retrying for these list of exception only, rest will be ignored,if this is there the above prop will not be req.
+        - java.util.concurrent.TimeoutException
+
+
+=>NOTE:-Retrying in microservices will call 3 times including user req.
