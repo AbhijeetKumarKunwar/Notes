@@ -1269,3 +1269,44 @@ beneficial for providing services to users based on their subscription tiers. Fo
 limits can be defined for basic, premium, and enterprise users
 
 													=>Implementing Redis RateLimiter in Gateway Server=>
+The provided Redis implementation uses the Token Bucket algorithm. To use it, you need to include the spring-boot-starter-data-redis Spring Boot starter dependency 
+in the gateway application. Basically, the token bucket algorithm uses balance tokens as a means to maintain an accumulating budget of utilization.
+The algorithm assumes tokens will be added to a bucket at a certain rate while calls to an API consume from these tokens. 
+
+
+In Spring Cloud, the rate limiting pattern is typically implemented at the API Gateway level using the built-in RequestRateLimiter filter, which leverages Redis as a
+distributed store to manage request counts across multiple instances. The underlying algorithm used is the Token Bucket algorithm. 
+Key Components
+API Gateway: The entry point to your microservices architecture where the rate limiting is enforced, acting as a gatekeeper to protect backend services.
+RequestRateLimiter Filter: A built-in Spring Cloud Gateway filter factory that determines whether an incoming request is allowed to proceed or if it has exceeded the limit.
+Redis: Serves as the centralized, high-speed data store for tracking and managing the "state" of the rate limits (e.g., the number of remaining tokens for a user) 
+in a distributed, thread-safe manner.
+KeyResolver: An interface you implement to define the basis on which to limit requests (e.g., by user ID, client IP address, or API key). 
+The Token Bucket Algorithm with Redis
+Spring Cloud's implementation uses the Token Bucket algorithm, which works as follows: 
+Imagine a virtual "bucket" for each client (defined by the KeyResolver).
+Tokens (representing requests) are added to the bucket at a constant rate (replenishRate).
+Each incoming request consumes a token from the bucket.
+If the bucket has enough tokens, the request is allowed.
+If the bucket is empty, the request is blocked, and an HTTP 429 (Too Many Requests) status is returned.
+The burstCapacity property defines the maximum number of tokens the bucket can hold, allowing for temporary traffic spikes without dropping requests. 
+
+
+@Bean
+public RouteLocator myRoutes (RouteLocatorBuilder builder)
+return builder.routes ()
+.route(p -> p.path("/eazybank/cards/**")
+}
+.filters(f -> f.rewritePath("/eazybank/cards/(?<segment>.*)","/${segment}")
+.addResponseHeader("X-Response-Time", new Date().toString ())
+.requestRateLimiter (config ->
+config.setRateLimiter(redisRateLimiter()).setKeyResolver (userKeyResolver())))
+.uri("lb://CARDS")).build();
+}
+@Bean
+public RedisRateLimiter redisRateLimiter() {
+return new RedisRateLimiter(1, 1, 1);
+}
+@Bean
+KeyResolver userKeyResolver() {
+return exchange -> Mono.justOrEmpty (exchange.getRequest().getHeaders().getFirst("user"))
