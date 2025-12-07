@@ -1310,3 +1310,16 @@ return new RedisRateLimiter(1, 1, 1);
 @Bean
 KeyResolver userKeyResolver() {
 return exchange -> Mono.justOrEmpty (exchange.getRequest().getHeaders().getFirst("user"))
+
+filters:
+            - name: RequestRateLimiter
+              args:
+                # Tokens added per second
+                redis-rate-limiter.replenishRate: 10
+                # Max tokens in the bucket (allows bursts)
+                redis-rate-limiter.burstCapacity: 20
+                # Key resolver bean name
+                key-resolver: '#clientIpAddressResolver'
+
+
+
