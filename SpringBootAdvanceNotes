@@ -1344,9 +1344,30 @@ resilience4j.ratelimiter:
   configs:
     default:
       timeoutDuration: 1000  //thread will wait for this time and if it does not get access to the api by ratelimitor, it will go to fallback or return with eror
-      limitRefreshPeriod: 5000 //quota will be updated
+      limitRefreshPeriod: 5000 //quota will be updated for ready req
       limitForPeriod: 1  //onely one req will be allowed.
 
 timeoutDuration	The maximum time a calling thread will block waiting for permission when the rate limit is exceeded.	1000ms (1 second)
 limitRefreshPeriod	The time interval after which the permission count (limitForPeriod) is reset or replenished.	5000ms (5 seconds)
 limitForPeriod	The number of permissions (requests) allowed during each limitRefreshPeriod.
+
+
+													--------------------BULKHEAD PATTERN---------------
+The Bulkhead pattern in software architecture is a design pattern that aims to improve the resilience and isolation of components
+or services within a system. It draws inspiration from the concept of bulkheads in ships, which are physical partitions that prevent
+the flooding of one compartment from affecting others, enhancing the overall stability and safety of the vessel.
+In the context of software systems, the Bulkhead pattern is used to isolate and limit the
+impact of failures or high loads in one component from spreading to other components. It
+helps ensure that a failure or heavy load in one part of the system does not bring down the
+entire system, enabling other components to continue functioning independently.
+Bulkhead Pattern helps us to allocate limit the resources which can be used for specific
+services. So that resource exhaustion can be reduced. FORE AND AFT
+BULKHEADs.
+The Bulkhead pattern is particularly useful in systems that require high availability, fault tolerance, and
+isolation between components. By compartmentalizing components and enforcing resource boundaries, the
+Bulkhead pattern enhances the resilience and stability of the system, ensuring that failures or heavy loads in
+one area do not bring down the entire system.
+
+
+				--------OBSERVABILITY(exception , we need to see the logs for that AND MONITORING OF MICROSERVICES(we can see like alert,dashboard etc)------------
+
