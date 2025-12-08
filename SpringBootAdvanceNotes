@@ -1369,5 +1369,15 @@ Bulkhead pattern enhances the resilience and stability of the system, ensuring t
 one area do not bring down the entire system.
 
 
-				--------OBSERVABILITY(exception , we need to see the logs for that AND MONITORING OF MICROSERVICES(we can see like alert,dashboard etc)------------
+				--------OBSERVABILITY(exception , we need to see the logs for that AND MONITORING OF MICROSERVICES(we can see like trace,alert,dashboard etc)------------
 
+->In monolithic we had one service so, collect the logs ,transactiona and mertrices was not an challenge but in the case microsevevices we might have hundred of MS
+and out flow will go thorugh it , if it fail anywhere its challenge to find it, os, to accumulate all the information  at single point we usess Observablity and monitoring.
+
+Monitoring->Identify and troubleshoot problems ,Metrics, traces, and logs ,Identify problems  and reactive.
+Observability->Understand the internal state of a system ,Metrics, traces, logs, and other data sources ,Understand how a system works and proactive
+
+In other words, monitoring is about collecting data and
+observability is about understanding data.
+Monitory is reacting to problems while observavility is fixing
+them in real time.
