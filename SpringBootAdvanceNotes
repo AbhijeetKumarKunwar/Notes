@@ -1422,3 +1422,17 @@ underperforming or that are experiencing problems.
 Optimize your microservices: By monitoring your microservices, you can identify
 areas where you can optimize your microservices to improve performance and
 reliability.
+
+
+									--------Spring Security---------------(OAUTH2)
+=>we can secure our services using OAuth2 or jwt, so open user can not access our resouces.
+=>"OAuth 2.0 is an authorization framework that offloads security tasks from an application to a dedicated Authorization Server. This allows users to grant third-party 
+applications (like Stack Overflow) limited access to their data on another service (like GitHub) without sharing their password.
+Instead of credentials, the server provides a temporary Access Token. When used for 'Social Login' (signing up with Google/GitHub),
+it often works with OpenID Connect to securely share basic identity details. This solves the problem of needing separate credentials for every site, 
+supporting a Single Sign-On (SSO) experience."
+
+Resource Owner: The user (you).
+Client: The application wanting access (e.g., Stack Overflow).
+Authorization Server: The server issuing tokens (e.g., GitHub's auth server).
+Resource Server: The server holding your actual data (e.g., your GitHub profile).
