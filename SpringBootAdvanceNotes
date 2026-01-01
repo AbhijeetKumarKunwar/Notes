@@ -1424,7 +1424,10 @@ areas where you can optimize your microservices to improve performance and
 reliability.
 
 
-									--------Spring Security---------------(OAUTH2)
+									--------Spring Security---------------(OAUTH2)->for autherization
+=>Authentication verifies who a user is
+=> Authorization determines what that authenticated user can do 
+
 =>we can secure our services using OAuth2 or jwt, so open user can not access our resouces.
 =>"OAuth 2.0 is an authorization framework that offloads security tasks from an application to a dedicated Authorization Server. This allows users to grant third-party 
 applications (like Stack Overflow) limited access to their data on another service (like GitHub) without sharing their password.
