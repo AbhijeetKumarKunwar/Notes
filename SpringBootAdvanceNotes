@@ -1435,6 +1435,9 @@ Instead of credentials, the server provides a temporary Access Token. When used 
 it often works with OpenID Connect to securely share basic identity details. This solves the problem of needing separate credentials for every site, 
 supporting a Single Sign-On (SSO) experience."
 
+https://medium.com/@bubu.tripathy/oauth-2-using-spring-boot-99c17292f228
+https://www.geeksforgeeks.org/springboot/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
+
 Resource Owner: The user (you).
 Client: The application wanting access (e.g., Stack Overflow).
 Authorization Server: The server issuing tokens (e.g., GitHub's auth server).
