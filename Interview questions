@@ -240,7 +240,7 @@ List<String> ls=Arrays.asList("cat","dog","fox","all","zebra","apple","red","yes
 
 
 
------------------accolite second round-------
+-----------------accolite  round-------
 
 How does prototype bean work internally
 how transaction work internally in spring boot
@@ -250,7 +250,7 @@ forklift exeecurot and other
 ->diff between prototype and req bean, who manages this bean
 ->how does spring boot internally load all the claseess, if this laod all classes it would over the heap.
 ->internal working of @Repository,@service  how does it diff from each other.
-->How atomic work interally in multithreading
+->How atomic work internally in multithreading
 ->Design pattern used by Transaction in spring boot(jpa)
 ->proxy in spring boot
 ->AOP in spring boot
@@ -258,3 +258,323 @@ forklift exeecurot and other
 ->what if we don't give terminal operation and end with intermediate operation.
 ->when we add dependencies to our application, how does spring internally create beans and laod its classes and made the connection with asked dependencies.
 ->what will happen when we will make the child overriding method to protected from public , why does it not allowed narrowing of visibility.
+
+
+
+--------------------------
+
+String input="aabbccccddaz";
+        StringBuilder sb=new StringBuilder();
+        int count=1;
+        for(int i=0;i<input.length();i++){
+            if(i<input.length()-1&&input.charAt(i)==input.charAt(i+1)){
+                count++;
+
+            }else{
+
+                sb.append(input.charAt(i));
+                sb.append(count);
+                count=1;
+            }
+        }
+
+        System.out.println(sb.toString());
+
+
+{2,4,7,9,11} Input is 11 find the duplet to find the sum of two number is 11
+
+HashMap<Integer,Integer> hs=new HashMap<>();
+
+int sum=0;
+if(hs.get(input-arr[i]){
+	ans->hs.get(input-arr[i]), i;
+else
+   hs.put(2,i)
+}
+
+
+
+@Configuration
+public class HttpClientConfig1 {
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+
+@Configuration
+public class HttpClientConfig2 {
+
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate rt = new RestTemplate();
+        // some interceptors
+        return rt;
+    }
+}
+
+which is best approch
+
+boolean exists =
+    employees.stream()
+             .filter(e -> e.getSalary() > 100000)
+             .findFirst()
+             .isPresent();
+boolean exists =
+    employees.stream()
+             .anyMatch(e -> e.getSalary() > 100000);
+
+
+int arr[]={6,3,7,4,5,2};
+        int target=9;
+
+
+
+public static int  fibonacii(int n){
+        if(n==1 ||n==0){
+            return n;
+        }else{
+            return fibonacii(n-1)+fibonacii(n-2);
+        }
+    }
+
+
+try{
+ cout" print try""
+return 2
+}catch{
+
+cout "print cath
+return 5
+
+}
+finally{
+
+print "finalluy
+return 3;
+
+
+
+
+//
+
+try{
+
+x=2;
+return x;
+finally(){
+x=+2;
+}
+
+
+//
+
+try{
+
+int arr[]={1};
+return 
+finally(){
+x=+2;
+}
+
+
+
+						----------Altimetrik------------
+//Given an array of integers, find the first non-repeating element.
+        // Return -1 if all elements repeat. Example Input: [9, 4, 9, 6, 7, 4] Output: 6
+
+
+
+
+
+package org.example;
+import javax.swing.text.html.parser.Entity;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.*;
+import java.util.stream.Collectors;
+public class Main {
+
+    public static void main(String[] args) {
+        Employee emp1=new Employee("sam",1234,new Department("HR"));
+        Employee emp2=new Employee("ram",1235,new Department("HR"));
+        Employee emp3=new Employee("samu",1236,new Department("IT"));
+        Employee emp4=new Employee("sams",1237,new Department("IT"));
+        Employee emp5=new Employee("samst",1238,new Department("HR"));
+        //higest sal each department.
+        List<Employee> employees=new ArrayList<>();
+        employees.add(emp1);
+        employees.add(emp2);
+        employees.add(emp3);
+        employees.add(emp4);
+        employees.add(emp5);
+        employees.stream()
+                .collect(Collectors.groupingBy(emp->emp.getDepartment().getDepartment()))
+                .entrySet().stream().
+                map(x->x.getValue().stream().max(Comparator.comparingInt(Employee::getSal)).get())
+                .forEach(x->System.out.println(x.name+" "+x.getSal() + " "+x.getDepartment().getDepartment()));
+
+
+
+        Map<String, Optional<Employee>> result = employees.stream()
+                .collect(Collectors.groupingBy(
+                        e -> e.getDepartment().getDepartment(),
+                        Collectors.maxBy(Comparator.comparingInt(Employee::getSal))
+                ));
+    }
+}
+class Employee{
+    String name;
+    int sal;
+    Department department;
+    Employee(String name, int sal, Department department){
+        this.name = name;
+        this.sal = sal;
+        this.department = department;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSal() {
+        return sal;
+    }
+
+    public void setSal(int sal) {
+        this.sal = sal;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+}
+class Department{
+    String department;
+    Department(String department) {
+        this.department = department;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+}
+
+
+
+
+Problem 1
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] where nums[i] + nums[j] + nums[k] == targetNumber (take  as input), and the indices i, j and k are all distinct.
+
+The output should not contain any duplicate triplets. You may return the output and the triplets in any order.
+
+Example 1:
+
+Input: nums = [-1,0,1,2,-1,-4]
+
+
+Target number = 3
+Output: [0,1,2]
+
+Input: arr[] = [1, 4, 45, 6, 10, 8], target = 13
+Output: true
+Explanation: The triplet [1, 4, 8] sums up to 13
+
+Input: arr[] = [1, 2, 4, 3, 6, 7], target = 10 
+Output: true
+Explanation: The triplets [1, 3, 6] and [1, 2, 7] both sum to 10. 
+
+
+HashMap<Integer,Integer> has=new HashMap<>();
+for(int i=0;i<nums.length;i++){
+
+
+if(has.contains(targer-nums[i]){
+	print-
+}else{
+   has.put(nums[i],i);
+
+}
+Broker 1->partition 1
+
+Broker 2->partition 1
+
+}
+
+
+
+Interface A {
+
+	Default Method A {
+		Some business logic
+}	 
+}
+
+Interface B {
+
+	Default Method A {
+		Some business logic
+}	 
+}
+
+
+Class X implements A, B {  //will it compile
+
+
+}
+
+Altimetrix client round:-
+//        Input array - [1,2,4]
+//        Output array - [1,2,5]
+//        Input array - [1,2,9]
+//        Output array - [1,3,0]
+
+
+
+//        Output - a4b3g2k7b3
+//        Input - Aaabbaa
+//        Output -  - a3b2a2
+//        String str="aaaabbbggkkkkkkkbbba";
+//        int count=1;
+//        StringBuilder sb=new StringBuilder();
+//        for(int i=0;i<str.length()-1;i++){
+//            if(str.charAt(i)==str.charAt(i+1)){
+//                count++;
+//            }else{
+//                sb.append(str.charAt(i));
+//                sb.append(count);
+//                count=1;
+//            }
+//        }
+//        sb.append(str.charAt(str.length()-1));
+//        sb.append(count);
+//        System.out.println(sb);
+
+
+
+
+							Accolite fourth round
+how to check why sql query is taking too much time when it is being using multiple jons, form sql .(direct ide )
+->when we have 5 threads and we want to all 5 threads to get completed first then only our main thread execute
+->How can i use the HashMap in multi threaded env
+->how annotation work internally, how can we develop for validatation mandatory field in object
+->Create signly link list
+->why vertical sacling has limitation
+->how to scale for high trafic
+->how can we opt the garbase collector stategy and what are they
+->why do we need custom exception if we can bind the message to existing exception type.
+->if we are getting memory exception in trace  . what will you check to debug
