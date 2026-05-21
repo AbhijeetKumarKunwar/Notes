@@ -1,0 +1,14 @@
+How LLMs Work
+https://towardsdatascience.com/new-to-llms-start-here/
+
+chain of though:-
+The Core Idea: System 1 vs. System 2 ThinkingTo understand CoT, it helps to think about human psychology. Humans have two modes of thinking:System 1 (Fast/Intuitive): If someone asks you, "What is 2 + 2?", your brain instantly blabs out "4" without thinking.System 2 (Slow/Deliberate): If someone asks you, "What is $34 \times 87$?", you cannot answer instantly. You have to grab a piece of paper, multiply the digits step-by-step, carry the numbers, and arrive at the answer.
+
+Chain-of-Thought Prompting Elicits Reasoning
+chain of though capablities help llms to answer hard problemn by breaking down to smaller tokens and we don't need to give promt for this, llm will take care of it.
+
+REACT: SYNERGIZING REASONING AND ACTING IN LANGUAGE MODELS
+If Chain-of-Thought gives an LLM a "scratchpad" to calculate answers, ReAct gives the LLM hands to interact with the world.
+The ReAct (Reasoning and Acting) framework is a paradigm that combines Chain-of-Thought (CoT) reasoning with action execution (tool use) in Large Language Models.
+Thought->Action->Observation->Thought->Action->Observation
+due to this flow, it break down and do observation of result so, it reduces the changes of hallucenation.
