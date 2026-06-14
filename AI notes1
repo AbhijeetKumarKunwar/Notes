@@ -12,3 +12,303 @@ If Chain-of-Thought gives an LLM a "scratchpad" to calculate answers, ReAct give
 The ReAct (Reasoning and Acting) framework is a paradigm that combines Chain-of-Thought (CoT) reasoning with action execution (tool use) in Large Language Models.
 Thought->Action->Observation->Thought->Action->Observation
 due to this flow, it break down and do observation of result so, it reduces the changes of hallucenation.
+
+
+
+How Function Calling Simplifies the Agent Loop
+
+
+import json
+import os
+from typing import List
+
+from litellm import completion
+
+def list_files() -> List[str]:
+    """List files in the current directory."""
+    return os.listdir(".")
+
+def read_file(file_name: str) -> str:
+    """Read a file's contents."""
+    try:
+        with open(file_name, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        return f"Error: {file_name} not found."
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+def terminate(message: str) -> None:
+    """Terminate the agent loop and provide a summary message."""
+    print(f"Termination message: {message}")
+
+tool_functions = {
+    "list_files": list_files,
+    "read_file": read_file,
+    "terminate": terminate
+}
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "list_files",
+            "description": "Returns a list of files in the directory.",
+            "parameters": {"type": "object", "properties": {}, "required": []}
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_file",
+            "description": "Reads the content of a specified file in the directory.",
+            "parameters": {
+                "type": "object",
+                "properties": {"file_name": {"type": "string"}},
+                "required": ["file_name"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "terminate",
+            "description": "Terminates the conversation. No further actions or interactions are possible after this. Prints the provided message for the user.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                },
+                "required": ["message"]
+            }
+        }
+    }
+]
+
+agent_rules = [{
+    "role": "system",
+    "content": """
+You are an AI agent that can perform tasks by using available tools. 
+
+If a user asks about files, documents, or content, first list the files before reading them.
+
+When you are done, terminate the conversation by using the "terminate" tool and I will provide the results to the user.
+"""
+}]
+
+# Initialize agent parameters
+iterations = 0
+max_iterations = 10
+
+user_task = input("What would you like me to do? ")
+
+memory = [{"role": "user", "content": user_task}]
+
+# The Agent Loop
+while iterations < max_iterations:
+
+    messages = agent_rules + memory
+
+    response = completion(
+        model="openai/gpt-4o",
+        messages=messages,
+        tools=tools,
+        max_tokens=1024
+    )
+
+    if response.choices[0].message.tool_calls:
+        tool = response.choices[0].message.tool_calls[0]
+        tool_name = tool.function.name
+        tool_args = json.loads(tool.function.arguments)
+
+        action = {
+            "tool_name": tool_name,
+            "args": tool_args
+        }
+
+        if tool_name == "terminate":
+            print(f"Termination message: {tool_args['message']}")
+            break
+        elif tool_name in tool_functions:
+            try:
+                result = {"result": tool_functions[tool_name](**tool_args)}
+            except Exception as e:
+                result = {"error":f"Error executing {tool_name}: {str(e)}"}
+        else:
+            result = {"error": f"Unknown tool: {tool_name}"}
+
+        print(f"Executing: {tool_name} with args {tool_args}")
+        print(f"Result: {result}")
+        memory.extend([
+            {"role": "assistant", "content": json.dumps(action)},
+            {"role": "user", "content": json.dumps(result)}
+        ])
+    else:
+        result = response.choices[0].message.content
+        print(f"Response: {result}")
+        break
+
+
+sample notes:-
+import json
+import os
+import sys
+from litellm import completion
+from typing import List, Dict
+from google.colab import userdata
+api_key = userdata.get('GEMINI_API_KEY')
+os.environ['GEMINI_API_KEY'] = api_key
+
+def extract_markdown_block(response: str, block_type: str = "json") -> str:
+    """Extract code block from response"""
+
+    if not '```' in response:
+        return response
+
+    code_block = response.split('```')[1].strip()
+
+    if code_block.startswith(block_type):
+        code_block = code_block[len(block_type):].strip()
+
+    return code_block
+
+def generate_response(messages: List[Dict]) -> str:
+    """Call LLM to get a response."""
+    # Retrieve the API key from the environment variable
+    gemini_api_key = os.getenv('GEMINI_API_KEY')
+    if not gemini_api_key:
+        raise ValueError("GEMINI_API_KEY environment variable not set.")
+
+    response = completion(
+        model="gemini/gemini-2.5-flash", # Explicitly specify the Gemini provider for Google Generative AI
+        messages=messages,
+        max_tokens=1024,
+        api_key=gemini_api_key # Explicitly pass the API key
+    )
+    return response.choices[0].message.content.strip()
+
+def parse_action(response: str) -> Dict:
+    """Parse the LLM response into a structured action dictionary."""
+    try:
+        response = extract_markdown_block(response, "action")
+        response_json = json.loads(response)
+        if "tool_name" in response_json and "args" in response_json:
+            return response_json
+        else:
+            return {"tool_name": "error", "args": {"message": "You must respond with a JSON tool invocation."}}
+    except json.JSONDecodeError:
+        return {"tool_name": "error", "args": {"message": "Invalid JSON response. You must respond with a JSON tool invocation."}}
+
+def list_files() -> List[str]:
+    """List files in the current directory."""
+    return os.listdir(".")
+
+def read_file(file_name: str) -> str:
+    """Read a file's contents."""
+    try:
+        with open(file_name, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        return f"Error: {file_name} not found."
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+# Define system instructions (Agent Rules)
+agent_rules = [{
+    "role": "system",
+    "content": """
+You are an AI agent that can perform tasks by using available tools.
+
+Available tools:
+
+```json
+{
+    "list_files": {
+        "description": "Lists all files in the current directory.",
+        "parameters": {}
+    },
+    "read_file": {
+        "description": "Reads the content of a file.",
+        "parameters": {
+            "file_name": {
+                "type": "string",
+                "description": "The name of the file to read."
+            }
+        }
+    },
+    "terminate": {
+        "description": "Ends the agent loop and provides a summary of the task.",
+        "parameters": {
+            "message": {
+                "type": "string",
+                "description": "Summary message to return to the user."
+            }
+        }
+    }
+}
+```
+
+If a user asks about files, documents, or content, first list the files before reading them.
+
+When you are done, terminate the conversation by using the \"terminate\" tool and I will provide the results to the user.
+
+Important!!! Every response MUST have an action.
+You must ALWAYS respond in this format:
+
+<Stop and think step by step. Parameters map to args. Insert a rich description of your step by step thoughts here.>
+
+```action
+{
+    "tool_name": "insert tool_name",
+    "args": {...fill in any required arguments here...}
+}
+```"""
+}]
+
+# Initialize agent parameters
+iterations = 0
+max_iterations = 10
+
+user_task = input("What would you like me to do? ")
+
+memory = [{"role": "user", "content": user_task}]
+
+# The Agent Loop
+while iterations < max_iterations:
+    # 1. Construct prompt: Combine agent rules with memory
+    prompt = agent_rules + memory
+
+    # 2. Generate response from LLM
+    print("Agent thinking...")
+    response = generate_response(prompt)
+    print(f"Agent response: {response}")
+
+    # 3. Parse response to determine action
+    action = parse_action(response)
+    result = "Action executed"
+
+    if action["tool_name"] == "list_files":
+        result = {"result": list_files()}
+    elif action["tool_name"] == "read_file":
+        result = {"result": read_file(action["args"]["file_name"])}
+    elif action["tool_name"] == "error":
+        result = {"error": action["args"]["message"]}
+    elif action["tool_name"] == "terminate":
+        print(action["args"]["message"])
+        break
+    else:
+        result = {"error": "Unknown action: " + action["tool_name"]}
+
+    print(f"Action result: {result}")
+
+    # 5. Update memory with response and results
+    memory.extend([
+        {"role": "assistant", "content": response},
+        {"role": "user", "content": json.dumps(result)}
+    ])
+
+    # 6. Check termination condition
+    if action["tool_name"] == "terminate":
+        break
+
+    iterations += 1
