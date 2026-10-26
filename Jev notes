@@ -1,1 +1,39 @@
+Here is the complete text extracted from the photo:
+Resources:
+Pdf: https://drive.google.com/file/d/14n322pA8FUXXimJLh_5ZYq-wwbJsMum6/view?usp=sharing
+Link: https://github.com/campusx-official/jev-demo
+Link: https://benchmarkheaven.com/jev-models
+Link: https://github.com/jaredpalmer/key
+Link: https://laya.convaiinnovations.com/. Laya
+Link: https://typesafe.ai/
+
+
+
+Jev is a specialized AI decision model made by TypeSafe AI. It does not chat, generate prose, write code, or provide long explanations. Instead, it evaluates supplied information and returns structured decisions that software can use directly. TypeSafe
+It is intended for fast, repeatable decisions such as classification, routing, scoring, verification, and guardrails.
+How it works
+ * The application sends Jev a state: text or structured text/JSON, such as a customer message, account data, order details, and policy information.
+ * The application asks one or more typed questions.
+ * Jev evaluates every question against the same state in parallel.
+ * It returns structured values, probabilities, and—in applicable question types—confidence.
+ * Application code uses those results to route, approve, reject, escalate, or call an LLM/human reviewer. TypeSafe
+Output types
+| Primitive | Purpose | Example |
+|---|---|---|
+| Choice | Select one option from a defined list | Route ticket to billing, technical, or account |
+| Score | Rate something against a defined rubric | Customer urgency: 0–5 |
+| Noul | Judge whether a statement is true | "Is this a refund request?" \rightarrow 0.95 |
+Jev returns probabilities for choices and scores; a Noul returns a 0–1 value. TypeSafe
+Architecture — safe explanation
+Traditional chat LLMs generate output sequentially, one token after another. Jev does not produce free-form text. It is designed to return constrained, typed decisions and evaluate multiple independent questions in parallel from a shared input state. This is the main reason it can be faster and cheaper for decision workflows. TypeSafe AI Blog
+Do not describe Jev as an encoder or decoder model unless TypeSafe publishes its detailed architecture.
+Where Jev is used
+ * Support routing: classify a customer's intent and direct the request to the right team.
+ * Agent/tool routing: choose which workflow, API, agent, or LLM should handle a task.
+ * Trust and safety: identify unsafe content, fraud signals, spam, or policy violations.
+ * Quality/risk scoring: score urgency, quality, sentiment, compliance risk, or likelihood of escalation.
+ * LLM guardrails: check LLM inputs, tool calls, or outputs before allowing an action. TypeSafe
+ * Human/LLM escalation: use low-confidence results to send complex cases to a stronger reasoning model or person. TypeSafe
+Best one-line summary
+Jev is a fast, structured decision layer for software: it turns input data into typed classifications, scores, probabilities, and routing decisions, while LLMs remain better suited for open-ended reasoning and text generation.
 
